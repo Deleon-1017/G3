@@ -74,5 +74,41 @@ function is_active($names) {
         </a>
       </div>
     </details>
+
+    <!-- Module 5 Dropdown (for Module 3) -->
+    <details class="group" <?php if (is_active(['purchase_requisitions.php','purchase_orders.php','suppliers.php'])) echo "open"; ?>>
+      <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
+        <span>Module 5</span>
+      </summary>
+      <div class="ml-5 mt-1 space-y-1">
+        <a href="<?php echo BASE_URL; ?>Module3/purchase_requisitions.php" class="block px-2 py-1 rounded <?php echo is_active('purchase_requisitions.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">Purchase Requisitions</a>
+
+        <a href="<?php echo BASE_URL; ?>Module3/purchase_orders.php" class="block px-2 py-1 rounded <?php echo is_active('purchase_orders.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          Purchase Orders
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module3/suppliers.php" class="block px-2 py-1 rounded <?php echo is_active('suppliers.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          Suppliers
+        </a>
+      </div>
+    </details>
+
+    <!-- Module10 Dropdown (for Module 3) -->
+    <details class="group" <?php if (is_active(['purchase_requisitions.php','purchase_orders.php','suppliers.php'])) echo "open"; ?>>
+      <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
+        <span>Module 10</span>
+      </summary>
+      <div class="ml-5 mt-1 space-y-1">
+        <a href="<?php echo BASE_URL; ?>Module3/purchase_requisitions.php" class="block px-2 py-1 rounded <?php echo is_active('purchase_requisitions.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">Purchase Requisitions</a>
+
+        <a href="<?php echo BASE_URL; ?>Module3/purchase_orders.php" class="block px-2 py-1 rounded <?php echo is_active('purchase_orders.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          Purchase Orders
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module3/suppliers.php" class="block px-2 py-1 rounded <?php echo is_active('suppliers.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          Suppliers
+        </a>
+      </div>
+    </details>
   </nav>
 </aside>
