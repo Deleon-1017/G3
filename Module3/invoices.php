@@ -4,16 +4,52 @@ require '../db.php';
 require '../shared/config.php';
 
 // Handle PO ID parameter for pre-selecting a purchase order
-$preselected_po_id = isset($_GET['po_id']) ? (int)$_GET['po_id'] : null;
-// Handle delete
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+ $preselected_po_id = isset($_GET['po_id']) ? (int)$_GET['po_id'] : null;
+
+// Handle cancellation (changed from delete)
+if (isset($_GET['action']) && $_GET['action'] === 'cancel' && isset($_GET['id'])) {
     try {
-        $stmt = $pdo->prepare("DELETE FROM invoices WHERE id = ?");
-        $stmt->execute([$_GET['id']]);
-        header("Location: invoices.php?status=deleted");
+        // ✅ Step 1: Get invoice details before cancelling
+        $getInvoice = $pdo->prepare("SELECT invoice_number, status FROM invoices WHERE id = ?");
+        $getInvoice->execute([$_GET['id']]);
+        $invoice = $getInvoice->fetch(PDO::FETCH_ASSOC);
+        $invoice_number = $invoice ? $invoice['invoice_number'] : null;
+        
+        // Only allow cancellation if not already cancelled
+        if ($invoice && $invoice['status'] !== 'cancelled') {
+            // ✅ Step 2: Update invoice status to cancelled
+            $stmt = $pdo->prepare("UPDATE invoices SET status = 'cancelled' WHERE id = ?");
+            $stmt->execute([$_GET['id']]);
+
+            // ✅ Step 3: Notify Finance (cancel the invoice there)
+            if ($invoice_number) {
+                try {
+                    $finance_api_url = "http://localhost/GROUP3/Module5/receive_cancelled_invoice.php";
+                    $cancel_data = ["invoice_number" => $invoice_number, "status" => "cancelled"];
+
+                    $options = [
+                        "http" => [
+                            "header"  => "Content-Type: application/json\r\n",
+                            "method"  => "POST",
+                            "content" => json_encode($cancel_data)
+                        ]
+                    ];
+                    $context  = stream_context_create($options);
+                    $result = file_get_contents($finance_api_url, false, $context);
+
+                    // ✅ Optional: write debug log
+                    file_put_contents(__DIR__ . '/cancel_log.txt', date('Y-m-d H:i:s') . " | Cancelled invoice: $invoice_number | Result: $result\n", FILE_APPEND);
+                } catch (Exception $ex) {
+                    file_put_contents(__DIR__ . '/cancel_log.txt', date('Y-m-d H:i:s') . " | Finance cancellation failed: " . $ex->getMessage() . "\n", FILE_APPEND);
+                }
+            }
+        }
+
+        header("Location: invoices.php?status=cancelled");
         exit;
+
     } catch (Exception $e) {
-        $error = "Error deleting invoice: " . $e->getMessage();
+        $error = "Error cancelling invoice: " . $e->getMessage();
     }
 }
 
@@ -42,9 +78,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $total_amount, 
             $status
         ]);
-        
+
+        // ------------------------------
+        // Send invoice data to Finance module (Module5)
+        // ------------------------------
+        try {
+            // URL to your Finance API endpoint
+            $finance_api_url = "http://localhost/GROUP3/Module5/receive_procurement.php";
+
+            // Prepare data to send to Finance
+            $finance_data = [
+                "invoice_number" => $invoice_number,
+                "po_id" => $po_id,
+                "supplier_id" => $supplier_id,
+                "amount" => $total_amount,
+                "due_date" => $due_date,
+                "status" => $status
+            ];
+
+            // Create HTTP POST request with JSON
+            $options = [
+                "http" => [
+                    "header"  => "Content-Type: application/json\r\n",
+                    "method"  => "POST",
+                    "content" => json_encode($finance_data)
+                ]
+            ];
+            $context  = stream_context_create($options);
+            $result = file_get_contents($finance_api_url, false, $context);
+
+            // Optional: display response while testing
+            // echo $result;
+
+        } catch (Exception $e) {
+            // You can log errors here if Finance is unreachable
+            // error_log("Finance API error: " . $e->getMessage());
+        }
+
+        // Redirect back to invoices page
         header("Location: invoices.php?status=success");
         exit;
+
     } catch (Exception $e) {
         $error = "Error creating invoice: " . $e->getMessage();
     }
@@ -68,7 +142,7 @@ if (isset($_GET['action']) && in_array($_GET['action'], ['mark_paid', 'mark_over
 }
 
 // Load all invoices with purchase order and supplier details
-$invoices = $pdo->query("
+ $invoices = $pdo->query("
     SELECT i.*,
            po.po_number,
            s.name as supplier_name
@@ -79,7 +153,7 @@ $invoices = $pdo->query("
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 // Load delivered purchase orders for dropdown
-$purchase_orders = $pdo->query("
+ $purchase_orders = $pdo->query("
     SELECT po.*, s.name as supplier_name, 
            (SELECT SUM(quantity * unit_price) FROM purchase_order_items WHERE po_id = po.id) as total_amount
     FROM purchase_orders po
@@ -153,6 +227,10 @@ $purchase_orders = $pdo->query("
         .status-overdue {
             background: #f8d7da;
             color: #721c24;
+        }
+        .status-cancelled {
+            background: #e2e3e5;
+            color: #383d41;
         }
         .po-details {
             background: #f8f9fa;
@@ -262,6 +340,116 @@ $purchase_orders = $pdo->query("
         .table tr:hover {
             background-color: #f5f5f5;
         }
+        
+        /* Dropdown menu styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-toggle {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-toggle:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .dropdown-menu a {
+            color: #333;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .dropdown-menu .btn {
+            width: 100%;
+            text-align: left;
+            border-radius: 0;
+            margin: 0;
+            border: none;
+            background: none;
+            color: #333;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        
+        .dropdown-menu .btn:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .dropdown-menu .btn-danger {
+            color: #e74c3c;
+        }
+        
+        .dropdown-menu .btn-danger:hover {
+            background-color: #f8d7da;
+        }
+        
+        .dropdown-menu .btn-success {
+            color: #2ecc71;
+        }
+        
+        .dropdown-menu .btn-success:hover {
+            background-color: #d4edda;
+        }
+        
+        .dropdown-menu .btn-warning {
+            color: #f39c12;
+        }
+        
+        .dropdown-menu .btn-warning:hover {
+            background-color: #fff3cd;
+        }
+        
+        .dropdown-menu .btn-info {
+            color: #17a2b8;
+        }
+        
+        .dropdown-menu .btn-info:hover {
+            background-color: #d1ecf1;
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            margin: 5px 0;
+            overflow: hidden;
+            background-color: #e9ecef;
+        }
+        
+        .show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -287,9 +475,9 @@ $purchase_orders = $pdo->query("
             </div>
         <?php endif; ?>
 
-        <?php if (isset($_GET['status']) && $_GET['status'] === 'deleted'): ?>
+        <?php if (isset($_GET['status']) && $_GET['status'] === 'cancelled'): ?>
             <div class="card" style="background-color: #d4edda; border-left: 4px solid #27ae60; margin-bottom: 20px;">
-                <p style="color: #155724; margin: 0;">Invoice deleted successfully!</p>
+                <p style="color: #155724; margin: 0;">Invoice cancelled successfully!</p>
             </div>
         <?php endif; ?>
 
@@ -336,25 +524,36 @@ $purchase_orders = $pdo->query("
                                 </span>
                             </td>
                             <td>
-                                <div class="action-buttons">
-                                    <?php if ($invoice['po_number']): ?>
-                                        <a href="<?php echo BASE_URL; ?>Module3/purchase_orders.php?po=<?php echo urlencode($invoice['po_number']) ?>" class="btn btn-info" title="View Purchase Order">
-                                            Back to PO
-                                        </a>
-                                    <?php endif; ?>
-                                    
-                                    <?php if ($invoice['status'] === 'pending'): ?>
-                                        <button class="btn btn-success" onclick="updateStatus(<?php echo $invoice['id']; ?>, 'mark_paid')" title="Mark as Paid">
-                                            Mark Paid
-                                        </button>
-                                        <button class="btn btn-warning" onclick="updateStatus(<?php echo $invoice['id']; ?>, 'mark_overdue')" title="Mark as Overdue">
-                                            Mark Overdue
-                                        </button>
-                                    <?php endif; ?>
-                                    
-                                    <button class="btn btn-danger" onclick="deleteInvoice(<?php echo $invoice['id']; ?>)" title="Delete Invoice">
-                                        Delete
+                                <div class="dropdown">
+                                    <button class="dropdown-toggle" onclick="toggleDropdown(event, '<?php echo $invoice['id']; ?>')">
+                                        &#8942;
                                     </button>
+                                    <div id="dropdown-<?php echo $invoice['id']; ?>" class="dropdown-menu">
+                                        <?php if ($invoice['po_number']): ?>
+                                            <a href="<?php echo BASE_URL; ?>Module3/purchase_orders.php?po=<?php echo urlencode($invoice['po_number']) ?>" target="_blank">
+                                                Back to PO
+                                            </a>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($invoice['status'] === 'pending'): ?>
+                                            <button class="btn btn-success" onclick="updateStatus(<?php echo $invoice['id']; ?>, 'mark_paid')">
+                                                Mark as Paid
+                                            </button>
+                                            <button class="btn btn-warning" onclick="updateStatus(<?php echo $invoice['id']; ?>, 'mark_overdue')">
+                                                Mark as Overdue
+                                            </button>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($invoice['status'] !== 'cancelled'): ?>
+                                            <?php if ($invoice['po_number'] && $invoice['status'] === 'pending'): ?>
+                                                <div class="dropdown-divider"></div>
+                                            <?php endif; ?>
+                                            
+                                            <button class="btn btn-danger" onclick="cancelInvoice(<?php echo $invoice['id']; ?>)">
+                                                Cancel Invoice
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -475,13 +674,35 @@ $purchase_orders = $pdo->query("
         }
     }
 
-    function deleteInvoice(id) {
-        if (confirm('Are you sure you want to delete this invoice? This action cannot be undone.')) {
-            window.location.href = `<?php echo BASE_URL; ?>Module3/invoices.php?action=delete&id=${id}`;
+    function cancelInvoice(id) {
+        if (confirm('Are you sure you want to cancel this invoice?')) {
+            window.location.href = `<?php echo BASE_URL; ?>Module3/invoices.php?action=cancel&id=${id}`;
         }
     }
 
+    // Toggle dropdown menu
+    function toggleDropdown(event, id) {
+        event.stopPropagation();
+        closeAllDropdowns();
+        
+        const dropdown = document.getElementById(`dropdown-${id}`);
+        dropdown.classList.toggle('show');
+    }
+
+    // Close all dropdowns
+    function closeAllDropdowns() {
+        const dropdowns = document.getElementsByClassName('dropdown-menu');
+        for (let i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].classList.remove('show');
+        }
+    }
+
+    // Close dropdowns when clicking outside
     window.onclick = function(event) {
+        if (!event.target.matches('.dropdown-toggle')) {
+            closeAllDropdowns();
+        }
+        
         if (event.target === document.getElementById('addModal')) {
             closeAddModal();
         }

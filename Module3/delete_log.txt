@@ -1,0 +1,11 @@
+2025-10-05 18:53:08 | Deleted invoice: INV-20251005-928 | Result: {"status":"success","message":"Invoice marked as cancelled in Finance.","invoice_number":"INV-20251005-928"}
+2025-10-05 18:54:25 | Deleted invoice: INV-20251005-513 | Result: {"status":"success","message":"Invoice marked as cancelled in Finance.","invoice_number":"INV-20251005-513"}
+2025-10-05 19:00:21 | Deleted invoice: INV-20251005-865 | Result: {"status":"success","message":"Invoice marked as cancelled in Finance.","invoice_number":"INV-20251005-865"}
+2025-10-05 19:05:18 | Deleted invoice: INV-20250930-738 | Result: {"status":"success","message":"Invoice marked as cancelled in Finance.","invoice_number":"INV-20250930-738"}
+2025-10-05 19:15:18 | Cancelled invoice: INV-20251005-752 | Result: {"status":"success","message":"Invoice marked as cancelled in both Finance and Procurement.","invoice_number":"INV-20251005-752"}
+2025-10-05 19:15:25 | Cancelled invoice: INV-20251005-752 | Result: {"status":"success","message":"Invoice marked as cancelled in both Finance and Procurement.","invoice_number":"INV-20251005-752"}
+2025-10-05 19:16:24 | Cancelled invoice: INV-20251005-752 | Result: {"status":"success","message":"Invoice marked as cancelled in both Finance and Procurement.","invoice_number":"INV-20251005-752"}
+2025-10-05 19:17:05 | Deleted invoice: INV-20251005-752 | Result: {"status":"success","message":"Invoice marked as cancelled in Finance.","invoice_number":"INV-20251005-752"}
+2025-10-06 06:24:58 | Deleted invoice: INV-20251006-809 | Result: {"status":"success","message":"Invoice marked as cancelled in Finance.","invoice_number":"INV-20251006-809"}
+2025-10-06 06:59:51 | Deleted invoice: INV-20251006-449 | Result: {"status":"success","message":"Invoice marked as cancelled in Finance.","invoice_number":"INV-20251006-449"}
+2025-10-06 07:12:45 | Deleted invoice: INV-20251006-598 | Result: 

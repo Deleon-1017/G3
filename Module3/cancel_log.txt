@@ -1,0 +1,1 @@
+2025-10-06 07:25:38 | Cancelled invoice: INV-20251006-858 | Result: {"status":"success","message":"Invoice marked as cancelled in Finance.","invoice_number":"INV-20251006-858"}
