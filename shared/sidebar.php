@@ -58,7 +58,7 @@ function is_active($names) {
     </details>
     
     <!-- Procurement Dropdown (for Module 3) -->
-    <details class="group" <?php if (is_active(['purchase_requisitions.php','purchase_orders.php','suppliers.php'])) echo "open"; ?>>
+    <details class="group" <?php if (is_active(['purchase_requisitions.php','purchase_orders.php','invoices.php', 'suppliers.php'])) echo "open"; ?>>
       <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
         <span>Procurement</span>
       </summary>
@@ -69,26 +69,25 @@ function is_active($names) {
           Purchase Orders
         </a>
 
+        <a href="<?php echo BASE_URL; ?>Module3/invoices.php" class="block px-2 py-1 rounded <?php echo is_active('invoices.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          Invoices
+        </a>
+
         <a href="<?php echo BASE_URL; ?>Module3/suppliers.php" class="block px-2 py-1 rounded <?php echo is_active('suppliers.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
           Suppliers
         </a>
       </div>
     </details>
 
-    <!-- Module 5 Dropdown (for Module 3) -->
-    <details class="group" <?php if (is_active(['purchase_requisitions.php','purchase_orders.php','suppliers.php'])) echo "open"; ?>>
+    <!-- Module 5 Dropdown -->
+    <details class="group" <?php if (is_active(['finance_dashboard.php'])) echo "open"; ?>>
       <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
-        <span>Module 5</span>
+        <span>Finance and Accounting</span>
       </summary>
       <div class="ml-5 mt-1 space-y-1">
-        <a href="<?php echo BASE_URL; ?>Module3/purchase_requisitions.php" class="block px-2 py-1 rounded <?php echo is_active('purchase_requisitions.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">Purchase Requisitions</a>
-
-        <a href="<?php echo BASE_URL; ?>Module3/purchase_orders.php" class="block px-2 py-1 rounded <?php echo is_active('purchase_orders.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
-          Purchase Orders
-        </a>
-
-        <a href="<?php echo BASE_URL; ?>Module3/suppliers.php" class="block px-2 py-1 rounded <?php echo is_active('suppliers.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
-          Suppliers
+        <a href="<?php echo BASE_URL; ?>Module5/finance_dashboard.php" 
+          class="block px-2 py-1 rounded <?php echo is_active('finance_dashboard.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          Accounts Payable
         </a>
       </div>
     </details>

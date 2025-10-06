@@ -6,53 +6,6 @@ require '../shared/config.php';
 // Handle PO ID parameter for pre-selecting a purchase order
  $preselected_po_id = isset($_GET['po_id']) ? (int)$_GET['po_id'] : null;
 
-// Handle cancellation (changed from delete)
-if (isset($_GET['action']) && $_GET['action'] === 'cancel' && isset($_GET['id'])) {
-    try {
-        // ✅ Step 1: Get invoice details before cancelling
-        $getInvoice = $pdo->prepare("SELECT invoice_number, status FROM invoices WHERE id = ?");
-        $getInvoice->execute([$_GET['id']]);
-        $invoice = $getInvoice->fetch(PDO::FETCH_ASSOC);
-        $invoice_number = $invoice ? $invoice['invoice_number'] : null;
-        
-        // Only allow cancellation if not already cancelled
-        if ($invoice && $invoice['status'] !== 'cancelled') {
-            // ✅ Step 2: Update invoice status to cancelled
-            $stmt = $pdo->prepare("UPDATE invoices SET status = 'cancelled' WHERE id = ?");
-            $stmt->execute([$_GET['id']]);
-
-            // ✅ Step 3: Notify Finance (cancel the invoice there)
-            if ($invoice_number) {
-                try {
-                    $finance_api_url = "http://localhost/GROUP3/Module5/receive_cancelled_invoice.php";
-                    $cancel_data = ["invoice_number" => $invoice_number, "status" => "cancelled"];
-
-                    $options = [
-                        "http" => [
-                            "header"  => "Content-Type: application/json\r\n",
-                            "method"  => "POST",
-                            "content" => json_encode($cancel_data)
-                        ]
-                    ];
-                    $context  = stream_context_create($options);
-                    $result = file_get_contents($finance_api_url, false, $context);
-
-                    // ✅ Optional: write debug log
-                    file_put_contents(__DIR__ . '/cancel_log.txt', date('Y-m-d H:i:s') . " | Cancelled invoice: $invoice_number | Result: $result\n", FILE_APPEND);
-                } catch (Exception $ex) {
-                    file_put_contents(__DIR__ . '/cancel_log.txt', date('Y-m-d H:i:s') . " | Finance cancellation failed: " . $ex->getMessage() . "\n", FILE_APPEND);
-                }
-            }
-        }
-
-        header("Location: invoices.php?status=cancelled");
-        exit;
-
-    } catch (Exception $e) {
-        $error = "Error cancelling invoice: " . $e->getMessage();
-    }
-}
-
 // Handle form submission for new invoice
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $invoice_number = 'INV-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
@@ -107,9 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $context  = stream_context_create($options);
             $result = file_get_contents($finance_api_url, false, $context);
 
-            // Optional: display response while testing
-            // echo $result;
-
         } catch (Exception $e) {
             // You can log errors here if Finance is unreachable
             // error_log("Finance API error: " . $e->getMessage());
@@ -124,31 +74,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Handle status update
-if (isset($_GET['action']) && in_array($_GET['action'], ['mark_paid', 'mark_overdue']) && isset($_GET['id'])) {
-    $status_map = [
-        'mark_paid' => 'paid',
-        'mark_overdue' => 'overdue'
-    ];
-    
-    try {
-        $stmt = $pdo->prepare("UPDATE invoices SET status = ? WHERE id = ?");
-        $stmt->execute([$status_map[$_GET['action']], $_GET['id']]);
-        header("Location: invoices.php?status=updated");
-        exit;
-    } catch (Exception $e) {
-        $error = "Error updating invoice status: " . $e->getMessage();
-    }
-}
-
 // Load all invoices with purchase order and supplier details
+// Modified to join with accounts_payable to get the latest status
  $invoices = $pdo->query("
     SELECT i.*,
            po.po_number,
-           s.name as supplier_name
+           s.name as supplier_name,
+           COALESCE(ap.status, i.status) as current_status
     FROM invoices i
     LEFT JOIN purchase_orders po ON i.po_id = po.id
     LEFT JOIN suppliers s ON i.supplier_id = s.id
+    LEFT JOIN accounts_payable ap ON i.invoice_number = ap.invoice_number
     ORDER BY i.invoice_date DESC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
@@ -256,70 +192,6 @@ if (isset($_GET['action']) && in_array($_GET['action'], ['mark_paid', 'mark_over
             flex: 1;
         }
         
-        /* New button styles for better alignment and appearance */
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-        
-        .btn-success {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #27ae60;
-        }
-        
-        .btn-warning {
-            background-color: #f39c12;
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            background-color: #e67e22;
-        }
-        
-        .btn-danger {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-        
-        .btn-info {
-            background-color: #17a2b8;
-            color: white;
-        }
-        
-        .btn-info:hover {
-            background-color: #138496;
-        }
-        
         /* Table styling improvements */
         .table {
             width: 100%;
@@ -341,114 +213,19 @@ if (isset($_GET['action']) && in_array($_GET['action'], ['mark_paid', 'mark_over
             background-color: #f5f5f5;
         }
         
-        /* Dropdown menu styles */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .dropdown-toggle {
-            background: none;
+        .refresh-btn {
+            background-color: #17a2b8;
+            color: white;
             border: none;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 5px;
-            color: #555;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            transition: background-color 0.2s;
-        }
-        
-        .dropdown-toggle:hover {
-            background-color: #f1f1f1;
-        }
-        
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: #fff;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+            padding: 8px 12px;
             border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .dropdown-menu a {
-            color: #333;
-            padding: 10px 15px;
-            text-decoration: none;
-            display: block;
+            cursor: pointer;
             font-size: 14px;
-            transition: background-color 0.2s;
+            margin-left: 10px;
         }
         
-        .dropdown-menu a:hover {
-            background-color: #f1f1f1;
-        }
-        
-        .dropdown-menu .btn {
-            width: 100%;
-            text-align: left;
-            border-radius: 0;
-            margin: 0;
-            border: none;
-            background: none;
-            color: #333;
-            padding: 10px 15px;
-            font-size: 14px;
-        }
-        
-        .dropdown-menu .btn:hover {
-            background-color: #f1f1f1;
-        }
-        
-        .dropdown-menu .btn-danger {
-            color: #e74c3c;
-        }
-        
-        .dropdown-menu .btn-danger:hover {
-            background-color: #f8d7da;
-        }
-        
-        .dropdown-menu .btn-success {
-            color: #2ecc71;
-        }
-        
-        .dropdown-menu .btn-success:hover {
-            background-color: #d4edda;
-        }
-        
-        .dropdown-menu .btn-warning {
-            color: #f39c12;
-        }
-        
-        .dropdown-menu .btn-warning:hover {
-            background-color: #fff3cd;
-        }
-        
-        .dropdown-menu .btn-info {
-            color: #17a2b8;
-        }
-        
-        .dropdown-menu .btn-info:hover {
-            background-color: #d1ecf1;
-        }
-        
-        .dropdown-divider {
-            height: 1px;
-            margin: 5px 0;
-            overflow: hidden;
-            background-color: #e9ecef;
-        }
-        
-        .show {
-            display: block;
+        .refresh-btn:hover {
+            background-color: #138496;
         }
     </style>
 </head>
@@ -460,24 +237,13 @@ if (isset($_GET['action']) && in_array($_GET['action'], ['mark_paid', 'mark_over
             <h1>Invoices</h1>
             <div>
                 <button class="btn btn-primary" onclick="openAddModal()">+ New Invoice</button>
+                <button class="refresh-btn" onclick="refreshStatus()">Refresh Status</button>
             </div>
         </div>
 
         <?php if (isset($_GET['status']) && $_GET['status'] === 'success'): ?>
             <div class="card" style="background-color: #d4edda; border-left: 4px solid #27ae60; margin-bottom: 20px;">
                 <p style="color: #155724; margin: 0;">Invoice created successfully!</p>
-            </div>
-        <?php endif; ?>
-
-        <?php if (isset($_GET['status']) && $_GET['status'] === 'updated'): ?>
-            <div class="card" style="background-color: #d4edda; border-left: 4px solid #27ae60; margin-bottom: 20px;">
-                <p style="color: #155724; margin: 0;">Invoice updated successfully!</p>
-            </div>
-        <?php endif; ?>
-
-        <?php if (isset($_GET['status']) && $_GET['status'] === 'cancelled'): ?>
-            <div class="card" style="background-color: #d4edda; border-left: 4px solid #27ae60; margin-bottom: 20px;">
-                <p style="color: #155724; margin: 0;">Invoice cancelled successfully!</p>
             </div>
         <?php endif; ?>
 
@@ -498,7 +264,6 @@ if (isset($_GET['action']) && in_array($_GET['action'], ['mark_paid', 'mark_over
                         <th>Due Date</th>
                         <th>Amount</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -519,42 +284,9 @@ if (isset($_GET['action']) && in_array($_GET['action'], ['mark_paid', 'mark_over
                             <td><?php echo date('M d, Y', strtotime($invoice['due_date'])); ?></td>
                             <td>₱<?php echo number_format($invoice['total_amount'], 2); ?></td>
                             <td>
-                                <span class="status-badge status-<?php echo strtolower($invoice['status']); ?>">
-                                    <?php echo ucfirst(htmlspecialchars($invoice['status'])); ?>
+                                <span class="status-badge status-<?php echo strtolower($invoice['current_status']); ?>">
+                                    <?php echo ucfirst(htmlspecialchars($invoice['current_status'])); ?>
                                 </span>
-                            </td>
-                            <td>
-                                <div class="dropdown">
-                                    <button class="dropdown-toggle" onclick="toggleDropdown(event, '<?php echo $invoice['id']; ?>')">
-                                        &#8942;
-                                    </button>
-                                    <div id="dropdown-<?php echo $invoice['id']; ?>" class="dropdown-menu">
-                                        <?php if ($invoice['po_number']): ?>
-                                            <a href="<?php echo BASE_URL; ?>Module3/purchase_orders.php?po=<?php echo urlencode($invoice['po_number']) ?>" target="_blank">
-                                                Back to PO
-                                            </a>
-                                        <?php endif; ?>
-                                        
-                                        <?php if ($invoice['status'] === 'pending'): ?>
-                                            <button class="btn btn-success" onclick="updateStatus(<?php echo $invoice['id']; ?>, 'mark_paid')">
-                                                Mark as Paid
-                                            </button>
-                                            <button class="btn btn-warning" onclick="updateStatus(<?php echo $invoice['id']; ?>, 'mark_overdue')">
-                                                Mark as Overdue
-                                            </button>
-                                        <?php endif; ?>
-                                        
-                                        <?php if ($invoice['status'] !== 'cancelled'): ?>
-                                            <?php if ($invoice['po_number'] && $invoice['status'] === 'pending'): ?>
-                                                <div class="dropdown-divider"></div>
-                                            <?php endif; ?>
-                                            
-                                            <button class="btn btn-danger" onclick="cancelInvoice(<?php echo $invoice['id']; ?>)">
-                                                Cancel Invoice
-                                            </button>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -663,49 +395,23 @@ if (isset($_GET['action']) && in_array($_GET['action'], ['mark_paid', 'mark_over
         }
     }
 
-    function updateStatus(id, action) {
-        const actionMap = {
-            'mark_paid': 'mark this invoice as paid?',
-            'mark_overdue': 'mark this invoice as overdue?'
-        };
+    // Function to refresh the status from finance module
+    function refreshStatus() {
+        // Show loading message
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'card';
+        messageDiv.style.backgroundColor = '#d1ecf1';
+        messageDiv.style.borderLeft = '4px solid #17a2b8';
+        messageDiv.style.marginBottom = '20px';
+        messageDiv.innerHTML = '<p style="color: #0c5460; margin: 0;">Refreshing status from Finance module...</p>';
         
-        if (confirm(`Are you sure you want to ${actionMap[action]}`)) {
-            window.location.href = `<?php echo BASE_URL; ?>Module3/invoices.php?action=${action}&id=${id}`;
-        }
-    }
-
-    function cancelInvoice(id) {
-        if (confirm('Are you sure you want to cancel this invoice?')) {
-            window.location.href = `<?php echo BASE_URL; ?>Module3/invoices.php?action=cancel&id=${id}`;
-        }
-    }
-
-    // Toggle dropdown menu
-    function toggleDropdown(event, id) {
-        event.stopPropagation();
-        closeAllDropdowns();
+        const container = document.querySelector('.container');
+        container.insertBefore(messageDiv, container.children[1]);
         
-        const dropdown = document.getElementById(`dropdown-${id}`);
-        dropdown.classList.toggle('show');
-    }
-
-    // Close all dropdowns
-    function closeAllDropdowns() {
-        const dropdowns = document.getElementsByClassName('dropdown-menu');
-        for (let i = 0; i < dropdowns.length; i++) {
-            dropdowns[i].classList.remove('show');
-        }
-    }
-
-    // Close dropdowns when clicking outside
-    window.onclick = function(event) {
-        if (!event.target.matches('.dropdown-toggle')) {
-            closeAllDropdowns();
-        }
-        
-        if (event.target === document.getElementById('addModal')) {
-            closeAddModal();
-        }
+        // Reload the page after a short delay
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
     }
 
     // Add this to the bottom of the page, inside the script tag
