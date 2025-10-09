@@ -60,7 +60,7 @@ function is_active($names) {
     </details>
     
     <!-- Procurement Dropdown -->
-    <details class="group" <?php if (is_active(['purchase_requisitions.php','purchase_orders.php','suppliers.php'])) echo "open"; ?>>
+    <details class="group" <?php if (is_active(['purchase_requisitions.php','purchase_orders.php','invoices.php', 'suppliers.php'])) echo "open"; ?>>
       <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
         <span>Procurement</span>
         <i class="fas fa-chevron-down transform transition-transform group-open:rotate-180"></i>
@@ -69,11 +69,13 @@ function is_active($names) {
         <a href="<?php echo BASE_URL; ?>Module3/purchase_requisitions.php" class="block px-2 py-1 rounded <?php echo is_active('purchase_requisitions.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
           <span>Purchase Requisitions</span>
         </a>
-
+        
         <a href="<?php echo BASE_URL; ?>Module3/purchase_orders.php" class="block px-2 py-1 rounded <?php echo is_active('purchase_orders.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
           <span>Purchase Orders</span>
         </a>
-
+        <a href="<?php echo BASE_URL; ?>Module3/invoices.php" class="block px-2 py-1 rounded <?php echo is_active('invoices.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Invoice</span>
+        </a>
         <a href="<?php echo BASE_URL; ?>Module3/suppliers.php" class="block px-2 py-1 rounded <?php echo is_active('suppliers.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
           <span>Suppliers</span>
         </a>
@@ -130,10 +132,6 @@ function is_active($names) {
 
         <a href="<?php echo BASE_URL; ?>Module10/payroll.php" class="block px-2 py-1 rounded <?php echo is_active('payroll.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
           <span>Payroll Management</span>
-        </a>
-
-        <a href="<?php echo BASE_URL; ?>Module10/payslip_generator.php" class="block px-2 py-1 rounded <?php echo is_active('payslip_generator.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
-          <span>Payslip Generator</span>
         </a>
 
         <a href="<?php echo BASE_URL; ?>Module10/attendance.php" class="block px-2 py-1 rounded <?php echo is_active('attendance.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
