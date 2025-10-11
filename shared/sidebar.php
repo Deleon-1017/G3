@@ -111,6 +111,39 @@ function is_active($names) {
       </div>
     </details>
 
+    <!-- Sales & Support Dropdown -->
+    <details class="group" <?php if (is_active(['index.php','customers.php','quotes.php','sales_orders.php','support_tickets.php','reports.php'])) echo "open"; ?>>
+      <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
+        <span>Sales & Support</span>
+        <i class="fas fa-chevron-down transform transition-transform group-open:rotate-180"></i>
+      </summary>
+      <div class="ml-5 mt-1 space-y-1">
+        <a href="<?php echo BASE_URL; ?>Module8/index.php" class="block px-2 py-1 rounded <?php echo is_active('index.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Dashboard</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module8/customers.php" class="block px-2 py-1 rounded <?php echo is_active('customers.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Customers</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module8/quotes.php" class="block px-2 py-1 rounded <?php echo is_active('quotes.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Quotes</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module8/sales_orders.php" class="block px-2 py-1 rounded <?php echo is_active('sales_orders.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Sales Orders</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module8/support_tickets.php" class="block px-2 py-1 rounded <?php echo is_active('support_tickets.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Support Tickets</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module8/reports.php" class="block px-2 py-1 rounded <?php echo is_active('reports.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Reports</span>
+        </a>
+      </div>
+    </details>
+
     <!-- Human Resources Dropdown -->
     <details class="group" <?php if (is_active(['index.php','employees.php','payroll.php','attendance.php','leave.php','employee_documents.php','payslip_generator.php'])) echo "open"; ?>>
       <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
@@ -144,5 +177,6 @@ function is_active($names) {
 
       </div>
     </details>
+
   </nav>
 </aside>
