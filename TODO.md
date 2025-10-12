@@ -1,0 +1,2 @@
+- [x] Modify Module8/api/sales_orders.php to pass order_id in the customer_credit API call
+- [x] Update Module5/api/customer_credit.php to accept order_id, query unit_prices, and add check for outstanding_balance < unit_price or == 0

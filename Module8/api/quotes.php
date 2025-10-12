@@ -14,6 +14,10 @@ try {
     $id = (int)($_GET['id'] ?? 0);
     $stmt = $pdo->prepare("SELECT * FROM quotations WHERE id = ?"); $stmt->execute([$id]);
     $q = $stmt->fetch(PDO::FETCH_ASSOC);
+    $customer_stmt = $pdo->prepare("SELECT name FROM customers WHERE id = ?");
+    $customer_stmt->execute([$q['customer_id']]);
+    $customer = $customer_stmt->fetch(PDO::FETCH_ASSOC);
+    $q['customer_name'] = $customer['name'] ?? '';
     $it = $pdo->prepare("SELECT * FROM quotation_items WHERE quotation_id = ?"); $it->execute([$id]);
     echo json_encode(['status'=>'success','data'=>$q,'items'=>$it->fetchAll(PDO::FETCH_ASSOC)]);
     exit;

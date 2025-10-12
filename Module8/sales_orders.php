@@ -224,8 +224,8 @@ require '../shared/config.php';
         <tbody>
           <tr>
             <td><select id="product_select" class="line-input" onchange="onProductChange()"><option value="">Select Product</option></select></td>
-            <td><input id="qty" type="number" value="1" style="width:80px" onchange="updateLineTotal()"></td>
-            <td><input id="unit_price" type="number" step="0.01" value="0" style="width:120px" onchange="updateLineTotal()"></td>
+            <td><input id="qty" type="number" value="1" style="width:80px" oninput="updateLineTotal()"></td>
+            <td><input id="unit_price" type="number" step="0.01" value="0" style="width:120px" oninput="updateLineTotal()"></td>
             <td><span id="line_total_display" style="display:inline-block;width:120px;text-align:center">₱0.00</span></td>
             <td><button class="btn" onclick="addItem()">Add</button></td>
           </tr>
@@ -238,7 +238,7 @@ require '../shared/config.php';
       <table class="table items-table">
         <thead>
           <tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Line Total</th><th>Subtotal</th><th>Discount</th><th>Tax</th><th>Total</th><th></th></tr>
-          <tr><td colspan="4"></td><td>₱<span id="subtotal">0.00</span></td><td><input id="discount" type="number" step="0.01" value="0" style="width:120px" onchange="calcTotals()"></td><td><input id="tax" type="number" step="0.01" value="0" style="width:120px" onchange="calcTotals()"></td><td>₱<span id="total">0.00</span></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td>₱<span id="subtotal">0.00</span></td><td><input id="discount" type="number" step="0.01" value="0" style="width:120px" oninput="calcTotals()"></td><td><input id="tax" type="number" step="0.01" value="0" style="width:120px" oninput="calcTotals()"></td><td>₱<span id="total">0.00</span></td><td></td></tr>
         </thead>
         <tbody id="items_body"></tbody>
       </table>
@@ -312,7 +312,7 @@ require '../shared/config.php';
 
   function renderItems(){
     const body = document.getElementById('items_body');
-    body.innerHTML = items.map((it,idx)=>`<tr><td>${it.description||''}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">₱${it.unit_price.toFixed(2)}</td><td style="text-align:right">₱${(it.line_total).toFixed(2)}</td><td style="text-align:center"><button onclick="removeItem(${idx})" class="btn" style="padding:4px 8px">Remove</button></td></tr>`).join('');
+    body.innerHTML = items.map((it,idx)=>`<tr><td>${it.description||''}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">₱${it.unit_price.toFixed(2)}</td><td style="text-align:right">₱${(it.line_total).toFixed(2)}</td><td></td><td></td><td></td><td></td><td style="text-align:center"><button onclick="removeItem(${idx})" class="btn" style="padding:4px 8px">Remove</button></td></tr>`).join('');
     calcTotals();
   }
 
@@ -492,28 +492,28 @@ require '../shared/config.php';
   <!-- Order Summary Modal -->
     <div id="orderSummaryModal" class="modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);justify-content:center;align-items:center;z-index:200">
       <div style="background:#fff;padding:20px;border-radius:12px;width:650px;max-height:80vh;overflow-y:auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-        <h3>Order Summary</h3>
+        <h1>Order Summary</h1>
         <div class="card" style="background:#f8f9fa; padding:20px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom:20px;">
           <p style="font-size:1.1em; margin-bottom:4px;"><strong>Order #:</strong> <span id="summary_order_number"></span></p>
           <p style="font-size:1em; color:#666;"><strong>Customer:</strong> <span id="summary_customer"></span></p>
         </div>
         <div class="card" style="background:#fff; padding:20px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom:20px;">
-          <h4 style="margin-bottom:12px;">Item</h4>
+          <h2 style="margin-bottom:15px;">Item</h2>
           <div id="summary_items_body"></div>
         </div>
         <div class="card" style="background:#f8f9fa; padding:20px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          <h4 style="margin-bottom:12px;">Summary</h4>
-          <div class="summary-row" style="display:flex;justify-content:space-between;">
-            <span>Subtotal:</span><span style="font-weight:500; font-size:0.9em; color:#666;">₱<span id="summary_subtotal"></span></span>
+          <h2 style="margin-bottom:15px;">Summary</h2>
+          <div class="summary-row" style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-weight:bold; font-size:1em;">Subtotal:</span><span style="font-weight:500; font-size:1em; color:#000;">₱<span id="summary_subtotal"></span></span>
           </div>
-          <div class="summary-row" style="display:flex;justify-content:space-between;">
-            <span>Discount:</span><span style="font-weight:500; color:#dc3545; font-size:0.9em;"><span id="summary_discount"></span>%</span>
+          <div class="summary-row" style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-weight:bold; font-size:1em;">Discount:</span><span style="font-weight:500; color:#dc3545; font-size:1em;"><span id="summary_discount"></span>%</span>
           </div>
-          <div class="summary-row" style="display:flex;justify-content:space-between;">
-            <span>Tax:</span><span style="font-weight:500; font-size:0.9em; color:#666;"><span id="summary_tax"></span>%</span>
+          <div class="summary-row" style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-weight:bold; font-size:1em;">Tax:</span><span style="font-weight:500; font-size:1em; color:#000;"><span id="summary_tax"></span>%</span>
           </div>
-          <div class="summary-row" style="display:flex;justify-content:space-between;font-weight:bold;">
-            <span>Total:</span><span style="font-weight:bold; font-size:0.9em; color:#666;">₱<span id="summary_total"></span></span>
+          <div class="summary-row" style="display:flex;justify-content:space-between;font-weight:bold; padding-top:8px; border-top:1px solid #ddd;">
+            <span style="font-weight:bold; font-size:1.1em;">Total:</span><span style="font-weight:bold; font-size:1.1em; color:#000;">₱<span id="summary_total"></span></span>
           </div>
         </div>
         <div style="margin-top:20px;text-align:right">

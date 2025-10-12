@@ -98,22 +98,22 @@ try {
       exit;
     }
 
-    // Query finance for customer credit/payment history — assumes Module5 provides API endpoint /Module5/api/customer_credit.php?id=...
+    // Query finance for customer credit/payment history — assumes Module5 provides API endpoint /Module5/api/customer_credit.php?id=...&amount=...
     $order = $pdo->prepare("SELECT * FROM sales_orders WHERE id = ?");
     $order->execute([$id]);
     $order = $order->fetch(PDO::FETCH_ASSOC);
     $custId = $order['customer_id'];
-    // For now, bypass the credit check to allow processing existing orders
-    $credit_ok = true;
-    // Optional: log the check result for monitoring
-    list($code,$finresp) = http_get(BASE_URL . "Module5/api/customer_credit.php?id={$custId}");
+    // Check customer credit for the order total
+    list($code,$finresp) = http_get(BASE_URL . "Module5/api/customer_credit.php?id={$custId}&order_id={$id}&amount={$order['total']}");
     if ($code == 200) {
       $fin = json_decode($finresp, true);
       if (isset($fin['status']) && $fin['status'] !== 'success') {
-        error_log("Credit check failed for customer {$custId}: " . json_encode($fin));
+        echo json_encode(['status'=>'error','message'=>$fin['message'] ?? 'Credit check failed']);
+        exit;
       }
     } else {
-      error_log("Credit check HTTP failed for customer {$custId}: code {$code}");
+      echo json_encode(['status'=>'error','message'=>'Credit check service unavailable']);
+      exit;
     }
 
     // Begin a DB transaction for atomicity
@@ -211,12 +211,13 @@ try {
       echo json_encode(['status'=>'error','message'=>'Invalid status']);
       exit;
     }
-    $stmt = $pdo->prepare("UPDATE sales_orders SET status = ? WHERE id = ? AND status = 'processed'");
-    $stmt->execute([$new_status, $id]);
+    $expected_status = ($new_status === 'shipped') ? 'processed' : 'shipped';
+    $stmt = $pdo->prepare("UPDATE sales_orders SET status = ? WHERE id = ? AND status = ?");
+    $stmt->execute([$new_status, $id, $expected_status]);
     if ($stmt->rowCount() > 0) {
       echo json_encode(['status'=>'success']);
     } else {
-      echo json_encode(['status'=>'error','message'=>'Order not found or not processed']);
+      echo json_encode(['status'=>'error','message'=>'Order not found or not in the correct status']);
     }
     exit;
   }

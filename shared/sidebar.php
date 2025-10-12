@@ -112,7 +112,7 @@ function is_active($names) {
     </details>
 
     <!-- Sales & Support Dropdown -->
-    <details class="group" <?php if (is_active(['index.php','customers.php','quotes.php','sales_orders.php','support_tickets.php','reports.php'])) echo "open"; ?>>
+    <details class="group" <?php if (is_active(['index.php','customers.php','quotes.php','sales_orders.php','customer_leads.php','support_tickets.php','reports.php'])) echo "open"; ?>>
       <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
         <span>Sales & Support</span>
         <i class="fas fa-chevron-down transform transition-transform group-open:rotate-180"></i>
@@ -132,6 +132,10 @@ function is_active($names) {
 
         <a href="<?php echo BASE_URL; ?>Module8/sales_orders.php" class="block px-2 py-1 rounded <?php echo is_active('sales_orders.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
           <span>Sales Orders</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module8/customer_leads.php" class="block px-2 py-1 rounded <?php echo is_active('customer_leads.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Customer Leads</span>
         </a>
 
         <a href="<?php echo BASE_URL; ?>Module8/support_tickets.php" class="block px-2 py-1 rounded <?php echo is_active('support_tickets.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">

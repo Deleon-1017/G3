@@ -32,7 +32,7 @@ require '../shared/config.php';
         <h3 id="modalTitle">New Quote</h3>
         <button type="button" class="close-btn" onclick="closeQuoteModal()">&times;</button>
       </div>
-      <form id="quoteForm" novalidate>
+      <form id="quoteForm" novalidate onkeydown="if(event.key==='Enter' && event.target.tagName !== 'BUTTON') event.preventDefault();">
         <label>Customer<select id="quote_customer_id" name="customer_id" class="line-input" required><option value="">Select Customer</option></select></label>
         <div style="margin:16px 0;">
           <h4>Line Items</h4>
@@ -51,6 +51,8 @@ require '../shared/config.php';
           <label style="flex:1">Total<input id="quote_total" name="total" type="number" class="line-input" readonly></label>
         </div>
         <label>Expiry Date<input id="quote_expiry_date" name="expiry_date" type="date" class="line-input"></label>
+        <input type="hidden" id="quote_id" name="id">
+        <input type="hidden" id="quote_quote_number" name="quote_number">
         <div class="error" id="quoteError" style="display:none"></div>
         <div style="margin-top:8px;text-align:right;display:flex;gap:8px;justify-content:flex-end;align-items:center">
           <button type="button" class="btn" id="modalCancel">Cancel</button>
@@ -86,13 +88,19 @@ require '../shared/config.php';
     const j = await r.json();
     if (j.status==='success'){
       document.getElementById('modalTitle').innerText = 'Edit Quote';
-      document.getElementById('quote_customer_id').value = j.data.customer_id || '';
+      document.getElementById('quote_id').value = id;
+      document.getElementById('quote_quote_number').value = j.data.quote_number || '';
       document.getElementById('quote_subtotal').value = j.data.subtotal || '';
       document.getElementById('quote_discount').value = j.data.discount || '0';
       document.getElementById('quote_tax').value = j.data.tax || '0';
       document.getElementById('quote_total').value = j.data.total || '';
       document.getElementById('quote_expiry_date').value = j.data.expiry_date || '';
       window.items = j.items || [];
+      ensureModalInit();
+      await loadCustomers();
+      document.getElementById('quote_customer_id').value = j.data.customer_id || '';
+      document.querySelector('label').innerHTML = `<h3>Customer: ${j.data.customer_name}</h3>`;
+      await loadProducts();
       document.getElementById('itemsBody').innerHTML = '';
       window.items.forEach((item, idx) => {
         const tbody = document.getElementById('itemsBody');
@@ -100,16 +108,13 @@ require '../shared/config.php';
         const productOptions = window.products.map(p => `<option value="${p.id}" ${p.id == item.product_id ? 'selected' : ''}>${p.name}</option>`).join('');
         row.innerHTML = `
           <td><select class="line-input" onchange="updateItem(${idx})"><option value="">Select Product</option>${productOptions}</select></td>
-          <td><input type="number" class="line-input" placeholder="Qty" min="1" value="${item.qty}" onchange="updateItem(${idx})"></td>
-          <td><input type="number" class="line-input" placeholder="Unit Price" step="0.01" value="${item.unit_price}" onchange="updateItem(${idx})"></td>
+          <td><input type="number" class="line-input" placeholder="Qty" min="1" value="${item.qty}" oninput="updateItem(${idx})"></td>
+          <td><input type="number" class="line-input" placeholder="Unit Price" step="0.01" value="${item.unit_price}" oninput="updateItem(${idx})"></td>
           <td><input type="number" class="line-input" placeholder="Line Total" value="${item.line_total}" readonly></td>
           <td><button type="button" class="btn" onclick="removeItemRow(${idx})">Remove</button></td>
         `;
         tbody.appendChild(row);
       });
-      ensureModalInit();
-      await loadCustomers();
-      await loadProducts();
       if (window.showModal) window.showModal();
     } else {
       alert('Unable to load quote');
@@ -196,12 +201,15 @@ require '../shared/config.php';
     console.log('openCreateQuoteModal called');
     ensureModalInit();
     document.getElementById('modalTitle').innerText = 'New Quote';
+    document.querySelector('label').innerHTML = 'Customer<select id="quote_customer_id" name="customer_id" class="line-input" required><option value="">Select Customer</option></select>';
     document.getElementById('quote_customer_id').value = '';
     document.getElementById('quote_subtotal').value = '';
     document.getElementById('quote_discount').value = '0';
     document.getElementById('quote_tax').value = '0';
     document.getElementById('quote_total').value = '';
     document.getElementById('quote_expiry_date').value = '';
+    document.getElementById('quote_id').value = '';
+    document.getElementById('quote_quote_number').value = '';
     window.items = [];
     document.getElementById('itemsBody').innerHTML = '';
     await loadCustomers();
@@ -219,8 +227,8 @@ require '../shared/config.php';
     const productOptions = window.products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
     row.innerHTML = `
       <td><select class="line-input" onchange="updateItem(${idx})"><option value="">Select Product</option>${productOptions}</select></td>
-      <td><input type="number" class="line-input" placeholder="Qty" min="1" value="1" onchange="updateItem(${idx})"></td>
-      <td><input type="number" class="line-input" placeholder="Unit Price" step="0.01" onchange="updateItem(${idx})"></td>
+      <td><input type="number" class="line-input" placeholder="Qty" min="1" value="1" oninput="updateItem(${idx})"></td>
+      <td><input type="number" class="line-input" placeholder="Unit Price" step="0.01" oninput="updateItem(${idx})"></td>
       <td><input type="number" class="line-input" placeholder="Line Total" readonly></td>
       <td><button type="button" class="btn" onclick="removeItemRow(${idx})">Remove</button></td>
     `;
@@ -271,11 +279,13 @@ require '../shared/config.php';
 
     // inline validation (use safe lookup for the error container)
     const qe = window.quoteError || document.getElementById('quoteError');
-    if (!customer_id) { if (qe) { qe.innerText = 'Customer is required'; qe.style.display='block'; } document.getElementById('quote_customer_id').focus(); return; }
+    if (!document.getElementById('quote_id').value && !customer_id) { if (qe) { qe.innerText = 'Customer is required'; qe.style.display='block'; } document.getElementById('quote_customer_id').focus(); return; }
     if (window.items.length === 0) { if (qe) { qe.innerText = 'At least one item is required'; qe.style.display='block'; } return; }
 
     const fd = new FormData();
     fd.append('action', 'save');
+    fd.append('id', document.getElementById('quote_id').value);
+    fd.append('quote_number', document.getElementById('quote_quote_number').value);
     fd.append('customer_id', customer_id);
     fd.append('subtotal', subtotal);
     fd.append('discount', discount);
