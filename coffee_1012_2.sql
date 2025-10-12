@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 11, 2025 at 02:56 PM
+-- Generation Time: Oct 12, 2025 at 11:23 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -131,7 +131,10 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `name`, `code`, `notes`, `created_at`, `email`, `phone`, `address`) VALUES
-(4, 'Gab De Leon', 'CUST-004', NULL, '2025-10-11 14:40:43', 'gabdeleon00@gmail.com', '09564763689', 'Sa Sunny Brooke');
+(4, 'Gab De Leon', 'CUST-004', NULL, '2025-10-11 14:40:43', 'gabdeleon00@gmail.com', '09564763689', 'Sa Sunny Brooke'),
+(5, 'Juan Dela Cruz', 'CUST-005', NULL, '2025-10-12 16:18:31', 'juandelacruz@gmail.com', '09123456789', 'Trece Martires'),
+(8, 'Revlon James', 'CUST-008', NULL, '2025-10-12 16:43:46', 'icdibdbodsod@dnasklad.com', '09876543210', 'Sa Kanto lang ng Jollibee'),
+(9, 'bdassak', 'CUST-009', NULL, '2025-10-12 17:12:33', 'ksabsabaskdka@bdfbbdow.com', '0405904389429', 'bbadbjkdabjkfbdajk');
 
 -- --------------------------------------------------------
 
@@ -153,7 +156,12 @@ CREATE TABLE `customer_finance` (
 --
 
 INSERT INTO `customer_finance` (`id`, `customer_id`, `credit_limit`, `outstanding_balance`, `created_at`, `updated_at`) VALUES
-(3, 4, 10000.00, 7610.00, '2025-10-11 06:40:43', '2025-10-11 07:43:03');
+(3, 4, 10000.00, 7551.00, '2025-10-11 06:40:43', '2025-10-12 06:45:39'),
+(4, 5, 20000.00, 19475.25, '2025-10-12 08:18:31', '2025-10-12 08:20:29'),
+(5, 6, 10000.00, 0.00, '2025-10-12 08:29:16', '2025-10-12 08:30:03'),
+(6, 7, 10000.00, 5.00, '2025-10-12 08:43:09', '2025-10-12 08:43:21'),
+(8, 8, 10000.00, 5.00, '2025-10-12 08:43:46', '2025-10-12 08:43:46'),
+(9, 9, 100.00, 0.00, '2025-10-12 09:12:33', '2025-10-12 09:12:33');
 
 -- --------------------------------------------------------
 
@@ -184,6 +192,35 @@ INSERT INTO `customer_invoices` (`id`, `invoice_number`, `customer_id`, `order_i
 (1, 'SI-20251011-779', 4, 4, NULL, 0.00, 0.00, 55.00, 'pending', 'unpaid', NULL, '2025-10-11 14:47:55'),
 (2, 'INV-20251011-358', 4, 4, 'null', 60.00, 15.00, 55.00, 'unpaid', 'unpaid', '2025-11-10', '2025-10-11 15:07:40'),
 (3, 'INV-20251011-863', 4, 4, '[{\"id\":4,\"sales_order_id\":4,\"product_id\":39,\"description\":\"Banana (undefined)\",\"qty\":3,\"unit_price\":\"20.00\",\"line_total\":\"60.00\"}]', 60.00, 15.00, 55.00, 'unpaid', 'unpaid', '2025-11-10', '2025-10-11 15:09:26');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer_leads`
+--
+
+CREATE TABLE `customer_leads` (
+  `lead_id` int(11) NOT NULL,
+  `customer_name` varchar(100) NOT NULL,
+  `company_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `contact_number` varchar(20) NOT NULL,
+  `lead_source` enum('Website','Referral','Email','Call','Walk-in','Other') DEFAULT 'Website',
+  `interest_level` enum('Hot','Warm','Cold') DEFAULT 'Warm',
+  `status` enum('New','Contacted','Qualified','Converted','Lost') DEFAULT 'New',
+  `assigned_to` int(11) NOT NULL,
+  `remarks` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `customer_leads`
+--
+
+INSERT INTO `customer_leads` (`lead_id`, `customer_name`, `company_name`, `email`, `contact_number`, `lead_source`, `interest_level`, `status`, `assigned_to`, `remarks`, `created_at`, `updated_at`) VALUES
+(1, 'Papa Mo', 'The Company', 'hfehfhfe@bbbibirb.com', '09123456789', 'Call', 'Warm', 'Contacted', 8, 'Hambul lang', '2025-10-12 16:47:39', '2025-10-12 16:47:39'),
+(2, 'Notnot', 'DPWH', 'lolomopogi@gmail.com', '09876543210', 'Walk-in', 'Hot', 'Converted', 7, '', '2025-10-12 17:11:40', '2025-10-12 17:11:40');
 
 -- --------------------------------------------------------
 
@@ -592,7 +629,10 @@ INSERT INTO `invoice_sync_logs` (`id`, `sales_order_id`, `attempt_at`, `http_cod
 (10, 4, '2025-10-11 14:47:55', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251011-779\"}', 1),
 (11, 4, '2025-10-11 15:17:32', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251011-756\"}', 1),
 (12, 5, '2025-10-11 15:40:48', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251011-854\"}', 1),
-(13, 6, '2025-10-11 15:43:03', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251011-485\"}', 1);
+(13, 6, '2025-10-11 15:43:03', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251011-485\"}', 1),
+(14, 7, '2025-10-12 12:07:07', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-681\"}', 1),
+(15, 8, '2025-10-12 14:45:39', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-440\"}', 1),
+(16, 9, '2025-10-12 16:20:29', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-824\"}', 1);
 
 -- --------------------------------------------------------
 
@@ -699,7 +739,7 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`id`, `sku`, `name`, `description`, `category`, `unit`, `expiration_date`, `min_qty`, `max_qty`, `created_at`, `updated_at`, `warehouse_id`, `total_quantity`, `unit_price`) VALUES
 (6, 'SY001', 'Vanilla Syrup', 'Used for flavored lattes.', 'Syrups', 'bottle', '2026-01-01', 5, 30, '2025-09-19 13:10:56', NULL, 1, 0, NULL),
 (7, 'SY002', 'Caramel Syrup', 'Used in caramel macchiatos and frappes.', 'Syrups', 'bottle', '2026-01-01', 5, 30, '2025-09-19 13:10:56', NULL, 1, 0, NULL),
-(9, 'CP001', '12oz Paper Cups', 'Standard serving cups for hot beverages.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', NULL, 2, 0, NULL),
+(9, 'CP001', '12oz Paper Cups', 'Standard serving cups for hot beverages.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-12 04:07:07', 2, -1, NULL),
 (10, 'CP002', '16oz Paper Cups', 'Larger size for iced drinks.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-11 06:07:50', 2, -26, NULL),
 (11, 'CP003', 'Cup Lids', 'Lids compatible with 12oz and 16oz cups.', 'Packaging', 'pcs', NULL, 200, 2000, '2025-09-19 13:10:56', NULL, 2, 0, NULL),
 (12, 'SW001', 'White Sugar', 'Used in all beverages.', 'Sweeteners', 'kg', '2026-03-01', 2, 20, '2025-09-19 13:10:56', NULL, 1, 0, NULL),
@@ -710,8 +750,8 @@ INSERT INTO `products` (`id`, `sku`, `name`, `description`, `category`, `unit`, 
 (34, 'PROD-20250930-379', 'new', 'new', '', 'pcs', NULL, 50, 100, '2025-09-30 01:35:32', '2025-09-30 01:41:40', 2, 0, NULL),
 (35, 'PROD-20250930-263', 'kopi', 'kopi', '', 'g', NULL, 0, 10, '2025-09-30 01:45:14', '2025-09-30 01:46:05', 2, 0, NULL),
 (36, 'PROD-20250930-983', 'VanillaMilk', 'milk', 'beverage', 'ml', '2025-09-10', 20, 30, '2025-09-30 02:22:43', '2025-09-30 02:31:37', 1, 0, NULL),
-(38, 'PROD-20250930-852', 'chocolate syrup', 'chocolate syrup', '', 'ml', NULL, 0, 0, '2025-09-30 02:41:58', '2025-10-11 07:43:03', 2, -20, NULL),
-(39, 'OT0011', 'Banana', '', '', 'pcs', '2025-11-28', 300, 0, '2025-10-06 17:30:49', '2025-10-11 07:17:32', 1, 294, 15.00),
+(38, 'PROD-20250930-852', 'chocolate syrup', 'chocolate syrup', '', 'ml', NULL, 0, 0, '2025-09-30 02:41:58', '2025-10-12 06:45:39', 2, -21, NULL),
+(39, 'OT0011', 'Banana', '', '', 'pcs', '2025-11-28', 300, 0, '2025-10-06 17:30:49', '2025-10-12 08:30:03', 1, 291, 15.00),
 (40, 'OT0012', 'Milk', '', '', 'pcs', '2025-11-22', 30, 0, '2025-10-06 17:31:27', '2025-10-11 07:40:48', 2, 40, 125.00),
 (41, 'OT0013', 'Yogurt', '', '', 'pcs', '2025-11-29', 50, 0, '2025-10-06 17:32:13', '2025-10-06 17:33:03', 2, 100, 100.00);
 
@@ -734,7 +774,7 @@ CREATE TABLE `product_locations` (
 INSERT INTO `product_locations` (`product_id`, `location_id`, `quantity`) VALUES
 (6, 1, 10),
 (7, 1, 10),
-(9, 2, 500),
+(9, 2, 499),
 (10, 2, 474),
 (11, 2, 1000),
 (12, 1, 10),
@@ -745,8 +785,8 @@ INSERT INTO `product_locations` (`product_id`, `location_id`, `quantity`) VALUES
 (34, 2, 0),
 (35, 2, 505),
 (36, 1, 420),
-(38, 2, 30),
-(39, 1, 294),
+(38, 2, 29),
+(39, 1, 291),
 (40, 2, 40),
 (41, 2, 100);
 
@@ -897,7 +937,9 @@ CREATE TABLE `quotations` (
 
 INSERT INTO `quotations` (`id`, `quote_number`, `customer_id`, `status`, `subtotal`, `discount`, `tax`, `total`, `expiry_date`, `notes`, `terms`, `created_by`, `created_at`, `updated_at`) VALUES
 (3, 'Q-2025-0001', 4, 'draft', 60.00, 30.00, 10.00, 40.00, '2026-11-14', NULL, NULL, NULL, '2025-10-11 20:29:12', '2025-10-11 20:29:12'),
-(4, 'Q-2025-0002', 4, 'draft', 60.00, 0.00, 0.00, 60.00, '2026-04-18', NULL, NULL, NULL, '2025-10-11 20:33:12', '2025-10-11 20:33:12');
+(4, 'Q-2025-0002', 4, 'draft', 60.00, 0.00, 0.00, 60.00, '2026-04-18', NULL, NULL, NULL, '2025-10-11 20:33:12', '2025-10-11 20:33:12'),
+(6, 'Q-2025-0003', 5, 'draft', 1291.00, 65.00, 35.00, 1261.00, '2025-12-31', NULL, NULL, NULL, '2025-10-12 16:19:32', '2025-10-12 16:19:32'),
+(7, 'Q-2025-0004', 8, 'draft', 10.00, 15.00, 10.00, 5.00, '2026-01-01', NULL, NULL, NULL, '2025-10-12 16:46:16', '2025-10-12 16:46:16');
 
 -- --------------------------------------------------------
 
@@ -921,7 +963,10 @@ CREATE TABLE `quotation_items` (
 
 INSERT INTO `quotation_items` (`id`, `quotation_id`, `product_id`, `description`, `qty`, `unit_price`, `line_total`) VALUES
 (3, 3, 40, 'Milk', 6, 10.00, 60.00),
-(4, 4, 11, 'Cup Lids', 2, 30.00, 60.00);
+(4, 4, 11, 'Cup Lids', 2, 30.00, 60.00),
+(6, 6, 36, 'VanillaMilk', 1, 70.00, 70.00),
+(7, 6, 41, 'Yogurt', 11, 111.00, 1221.00),
+(8, 7, 35, 'kopi', 1, 10.00, 10.00);
 
 -- --------------------------------------------------------
 
@@ -942,17 +987,24 @@ CREATE TABLE `sales_orders` (
   `confirmed_at` datetime DEFAULT NULL,
   `finance_transaction_id` varchar(100) DEFAULT NULL,
   `finance_sync_status` enum('pending','synced','failed') DEFAULT 'pending',
-  `finance_sync_error` text DEFAULT NULL
+  `finance_sync_error` text DEFAULT NULL,
+  `lead_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sales_orders`
 --
 
-INSERT INTO `sales_orders` (`id`, `order_number`, `customer_id`, `status`, `subtotal`, `discount`, `tax`, `total`, `created_at`, `confirmed_at`, `finance_transaction_id`, `finance_sync_status`, `finance_sync_error`) VALUES
-(4, 'SO-1760164846', 4, 'delivered', 60.00, 20.00, 15.00, 55.00, '2025-10-11 14:41:14', '2025-10-11 15:17:32', 'SI-20251011-756', 'synced', NULL),
-(5, 'SO-1760168412', 4, 'processed', 300.00, 0.00, 0.00, 300.00, '2025-10-11 15:40:40', '2025-10-11 15:40:48', 'SI-20251011-854', 'synced', NULL),
-(6, 'SO-1760168507', 4, 'shipped', 1500.00, 50.00, 30.00, 1480.00, '2025-10-11 15:42:56', '2025-10-11 15:43:03', 'SI-20251011-485', 'synced', NULL);
+INSERT INTO `sales_orders` (`id`, `order_number`, `customer_id`, `status`, `subtotal`, `discount`, `tax`, `total`, `created_at`, `confirmed_at`, `finance_transaction_id`, `finance_sync_status`, `finance_sync_error`, `lead_id`) VALUES
+(4, 'SO-1760164846', 4, 'delivered', 60.00, 20.00, 15.00, 55.00, '2025-10-11 14:41:14', '2025-10-11 15:17:32', 'SI-20251011-756', 'synced', NULL, NULL),
+(5, 'SO-1760168412', 4, 'delivered', 300.00, 0.00, 0.00, 300.00, '2025-10-11 15:40:40', '2025-10-11 15:40:48', 'SI-20251011-854', 'synced', NULL, NULL),
+(6, 'SO-1760168507', 4, 'shipped', 1500.00, 50.00, 30.00, 1480.00, '2025-10-11 15:42:56', '2025-10-11 15:43:03', 'SI-20251011-485', 'synced', NULL, NULL),
+(7, 'SO-1760241877', 4, 'delivered', 10.00, 50.00, 30.00, 6.50, '2025-10-12 12:06:21', '2025-10-12 12:07:07', 'SI-20251012-681', 'synced', NULL, NULL),
+(8, 'SO-1760250837', 4, 'delivered', 70.00, 50.00, 50.00, 52.50, '2025-10-12 14:35:52', '2025-10-12 14:45:39', 'SI-20251012-440', 'synced', NULL, NULL),
+(9, 'SO-1760257182', 5, 'delivered', 30.00, 25.00, 10.00, 24.75, '2025-10-12 16:20:18', '2025-10-12 16:20:29', 'SI-20251012-824', 'synced', NULL, NULL),
+(10, 'SO-1760257552', 4, 'pending', 25.00, 10.00, 15.00, 25.87, '2025-10-12 16:26:48', NULL, NULL, 'pending', NULL, NULL),
+(12, 'SO-1760258631', 8, 'pending', 15.00, 0.00, 0.00, 15.00, '2025-10-12 16:44:06', NULL, NULL, 'pending', NULL, NULL),
+(13, 'SO-1760260356', 9, 'pending', 15.00, 10.00, 20.00, 16.20, '2025-10-12 17:13:02', NULL, NULL, 'pending', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -967,17 +1019,21 @@ CREATE TABLE `sales_order_items` (
   `description` varchar(255) DEFAULT NULL,
   `qty` int(11) DEFAULT 1,
   `unit_price` decimal(12,2) DEFAULT 0.00,
-  `line_total` decimal(12,2) DEFAULT 0.00
+  `line_total` decimal(12,2) DEFAULT 0.00,
+  `discount` decimal(5,2) DEFAULT 0.00,
+  `tax` decimal(5,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sales_order_items`
 --
 
-INSERT INTO `sales_order_items` (`id`, `sales_order_id`, `product_id`, `description`, `qty`, `unit_price`, `line_total`) VALUES
-(4, 4, 39, 'Banana (undefined)', 3, 20.00, 60.00),
-(5, 5, 40, 'Milk (undefined)', 10, 30.00, 300.00),
-(6, 6, 38, 'chocolate syrup (undefined)', 20, 75.00, 1500.00);
+INSERT INTO `sales_order_items` (`id`, `sales_order_id`, `product_id`, `description`, `qty`, `unit_price`, `line_total`, `discount`, `tax`) VALUES
+(8, 8, 38, 'chocolate syrup (PROD-20250930-852)', 1, 70.00, 70.00, 0.00, 0.00),
+(9, 9, 39, 'Banana (OT0011)', 2, 15.00, 30.00, 0.00, 0.00),
+(10, 10, 13, 'Brown Sugar (SW002)', 1, 25.00, 25.00, 0.00, 0.00),
+(12, 12, 39, 'Banana (OT0011)', 1, 15.00, 15.00, 0.00, 0.00),
+(13, 13, 39, 'Banana (OT0011)', 1, 15.00, 15.00, 0.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -1034,7 +1090,11 @@ INSERT INTO `stock_transactions` (`id`, `product_id`, `location_from`, `location
 (52, 39, 1, NULL, 3, '', NULL, 'Sales order #SO-1760164846', '2025-10-11 14:47:55', 'system', NULL, NULL, NULL),
 (53, 39, 1, NULL, 3, '', NULL, 'Sales order #SO-1760164846', '2025-10-11 15:17:32', 'system', NULL, NULL, NULL),
 (54, 40, 2, NULL, 10, '', NULL, 'Sales order #SO-1760168412', '2025-10-11 15:40:48', 'system', NULL, NULL, NULL),
-(55, 38, 2, NULL, 20, '', NULL, 'Sales order #SO-1760168507', '2025-10-11 15:43:03', 'system', NULL, NULL, NULL);
+(55, 38, 2, NULL, 20, '', NULL, 'Sales order #SO-1760168507', '2025-10-11 15:43:03', 'system', NULL, NULL, NULL),
+(56, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760241877', '2025-10-12 12:07:07', 'system', NULL, NULL, NULL),
+(57, 38, 2, NULL, 1, '', NULL, 'Sales order #SO-1760250837', '2025-10-12 14:45:39', 'system', NULL, NULL, NULL),
+(58, 39, 1, NULL, 2, '', NULL, 'Sales order #SO-1760257182', '2025-10-12 16:20:29', 'system', NULL, NULL, NULL),
+(59, 39, 1, NULL, 1, '', NULL, 'Sales order #SO-1760257775', '2025-10-12 16:30:03', 'system', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1085,6 +1145,31 @@ CREATE TABLE `support_tickets` (
 
 INSERT INTO `support_tickets` (`id`, `ticket_number`, `customer_id`, `subject`, `description`, `status`, `priority`, `assigned_to`, `created_at`, `closed_at`) VALUES
 (1, 'T-1760167959', 4, 'hiohfdhfeofew', 'fhaofhefheofoafhadufhfkbfefb', 'open', 'medium', NULL, '2025-10-11 15:32:39', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `role` enum('admin','sales','support') DEFAULT 'sales',
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `role`, `created_at`) VALUES
+(5, 'Nathaniel Himarangan', 'natnatmo@gmail.com', 'sales', '2025-10-12 16:11:31'),
+(6, 'Kyle Cabal', 'kylecabal@gmail.com', 'support', '2025-10-12 16:11:31'),
+(7, 'Mark Anthony Dano', 'danyomark@gmail.com', 'admin', '2025-10-12 16:11:31'),
+(8, 'Renoel Jersean Ocampo', 'bossrenoelmapagmahal@gmail.com', 'sales', '2025-10-12 16:11:31'),
+(9, 'Kyle Raven Mabignay', 'mabignay@example.com', 'support', '2025-10-12 16:11:31');
 
 --
 -- Indexes for dumped tables
@@ -1141,6 +1226,14 @@ ALTER TABLE `customer_finance`
 ALTER TABLE `customer_invoices`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `invoice_number` (`invoice_number`);
+
+--
+-- Indexes for table `customer_leads`
+--
+ALTER TABLE `customer_leads`
+  ADD PRIMARY KEY (`lead_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `assigned_to` (`assigned_to`);
 
 --
 -- Indexes for table `customer_segments`
@@ -1350,6 +1443,13 @@ ALTER TABLE `support_tickets`
   ADD KEY `customer_id` (`customer_id`);
 
 --
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1363,7 +1463,7 @@ ALTER TABLE `accounts_payable`
 -- AUTO_INCREMENT for table `accounts_receivable`
 --
 ALTER TABLE `accounts_receivable`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `asset_ledger`
@@ -1381,19 +1481,25 @@ ALTER TABLE `communications`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `customer_finance`
 --
 ALTER TABLE `customer_finance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `customer_invoices`
 --
 ALTER TABLE `customer_invoices`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `customer_leads`
+--
+ALTER TABLE `customer_leads`
+  MODIFY `lead_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `customer_segments`
@@ -1429,7 +1535,7 @@ ALTER TABLE `invoice_reminders`
 -- AUTO_INCREMENT for table `invoice_sync_logs`
 --
 ALTER TABLE `invoice_sync_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `locations`
@@ -1489,31 +1595,31 @@ ALTER TABLE `purchase_requisition_items`
 -- AUTO_INCREMENT for table `quotations`
 --
 ALTER TABLE `quotations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `quotation_items`
 --
 ALTER TABLE `quotation_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `sales_orders`
 --
 ALTER TABLE `sales_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `sales_order_items`
 --
 ALTER TABLE `sales_order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `stock_transactions`
 --
 ALTER TABLE `stock_transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
@@ -1526,6 +1632,12 @@ ALTER TABLE `suppliers`
 --
 ALTER TABLE `support_tickets`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
@@ -1551,6 +1663,12 @@ ALTER TABLE `asset_ledger`
 ALTER TABLE `communications`
   ADD CONSTRAINT `communications_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `support_tickets` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `communications_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `customer_leads`
+--
+ALTER TABLE `customer_leads`
+  ADD CONSTRAINT `customer_leads_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `goods_receipts`
