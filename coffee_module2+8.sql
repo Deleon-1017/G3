@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 12, 2025 at 11:23 AM
+-- Generation Time: Oct 13, 2025 at 04:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -134,7 +134,8 @@ INSERT INTO `customers` (`id`, `name`, `code`, `notes`, `created_at`, `email`, `
 (4, 'Gab De Leon', 'CUST-004', NULL, '2025-10-11 14:40:43', 'gabdeleon00@gmail.com', '09564763689', 'Sa Sunny Brooke'),
 (5, 'Juan Dela Cruz', 'CUST-005', NULL, '2025-10-12 16:18:31', 'juandelacruz@gmail.com', '09123456789', 'Trece Martires'),
 (8, 'Revlon James', 'CUST-008', NULL, '2025-10-12 16:43:46', 'icdibdbodsod@dnasklad.com', '09876543210', 'Sa Kanto lang ng Jollibee'),
-(9, 'bdassak', 'CUST-009', NULL, '2025-10-12 17:12:33', 'ksabsabaskdka@bdfbbdow.com', '0405904389429', 'bbadbjkdabjkfbdajk');
+(9, 'bdassak', 'CUST-009', NULL, '2025-10-12 17:12:33', 'ksabsabaskdka@bdfbbdow.com', '0405904389429', 'bbadbjkdabjkfbdajk'),
+(11, 'sdasdsads', 'CUST-011', NULL, '2025-10-13 09:49:22', 'pendaflex@bbibbf.com', '09832617165', 'Wala');
 
 -- --------------------------------------------------------
 
@@ -160,8 +161,10 @@ INSERT INTO `customer_finance` (`id`, `customer_id`, `credit_limit`, `outstandin
 (4, 5, 20000.00, 19475.25, '2025-10-12 08:18:31', '2025-10-12 08:20:29'),
 (5, 6, 10000.00, 0.00, '2025-10-12 08:29:16', '2025-10-12 08:30:03'),
 (6, 7, 10000.00, 5.00, '2025-10-12 08:43:09', '2025-10-12 08:43:21'),
-(8, 8, 10000.00, 5.00, '2025-10-12 08:43:46', '2025-10-12 08:43:46'),
-(9, 9, 100.00, 0.00, '2025-10-12 09:12:33', '2025-10-12 09:12:33');
+(8, 8, 10000.00, 0.05, '2025-10-12 08:43:46', '2025-10-13 00:48:26'),
+(9, 9, 100.00, 0.00, '2025-10-12 09:12:33', '2025-10-12 09:12:33'),
+(10, 10, 5000.00, 1500.00, '2025-10-13 01:47:05', '2025-10-13 01:47:05'),
+(12, 11, 10000.00, 1000.00, '2025-10-13 01:49:22', '2025-10-13 01:49:22');
 
 -- --------------------------------------------------------
 
@@ -220,7 +223,8 @@ CREATE TABLE `customer_leads` (
 
 INSERT INTO `customer_leads` (`lead_id`, `customer_name`, `company_name`, `email`, `contact_number`, `lead_source`, `interest_level`, `status`, `assigned_to`, `remarks`, `created_at`, `updated_at`) VALUES
 (1, 'Papa Mo', 'The Company', 'hfehfhfe@bbbibirb.com', '09123456789', 'Call', 'Warm', 'Contacted', 8, 'Hambul lang', '2025-10-12 16:47:39', '2025-10-12 16:47:39'),
-(2, 'Notnot', 'DPWH', 'lolomopogi@gmail.com', '09876543210', 'Walk-in', 'Hot', 'Converted', 7, '', '2025-10-12 17:11:40', '2025-10-12 17:11:40');
+(2, 'Notnot', 'DPWH', 'lolomopogi@gmail.com', '09876543210', 'Walk-in', 'Hot', 'Converted', 7, '', '2025-10-12 17:11:40', '2025-10-12 17:11:40'),
+(3, 'JM Dacer', 'Robert Lang', 'icdibdbodsod@dnasklad.com', '09876543210', 'Website', 'Hot', 'New', 5, '', '2025-10-12 18:54:10', '2025-10-12 18:54:10');
 
 -- --------------------------------------------------------
 
@@ -632,7 +636,8 @@ INSERT INTO `invoice_sync_logs` (`id`, `sales_order_id`, `attempt_at`, `http_cod
 (13, 6, '2025-10-11 15:43:03', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251011-485\"}', 1),
 (14, 7, '2025-10-12 12:07:07', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-681\"}', 1),
 (15, 8, '2025-10-12 14:45:39', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-440\"}', 1),
-(16, 9, '2025-10-12 16:20:29', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-824\"}', 1);
+(16, 9, '2025-10-12 16:20:29', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-824\"}', 1),
+(18, 14, '2025-10-13 08:48:26', 404, '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', 0);
 
 -- --------------------------------------------------------
 
@@ -738,19 +743,19 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`id`, `sku`, `name`, `description`, `category`, `unit`, `expiration_date`, `min_qty`, `max_qty`, `created_at`, `updated_at`, `warehouse_id`, `total_quantity`, `unit_price`) VALUES
 (6, 'SY001', 'Vanilla Syrup', 'Used for flavored lattes.', 'Syrups', 'bottle', '2026-01-01', 5, 30, '2025-09-19 13:10:56', NULL, 1, 0, NULL),
-(7, 'SY002', 'Caramel Syrup', 'Used in caramel macchiatos and frappes.', 'Syrups', 'bottle', '2026-01-01', 5, 30, '2025-09-19 13:10:56', NULL, 1, 0, NULL),
-(9, 'CP001', '12oz Paper Cups', 'Standard serving cups for hot beverages.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-12 04:07:07', 2, -1, NULL),
-(10, 'CP002', '16oz Paper Cups', 'Larger size for iced drinks.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-11 06:07:50', 2, -26, NULL),
-(11, 'CP003', 'Cup Lids', 'Lids compatible with 12oz and 16oz cups.', 'Packaging', 'pcs', NULL, 200, 2000, '2025-09-19 13:10:56', NULL, 2, 0, NULL),
-(12, 'SW001', 'White Sugar', 'Used in all beverages.', 'Sweeteners', 'kg', '2026-03-01', 2, 20, '2025-09-19 13:10:56', NULL, 1, 0, NULL),
-(13, 'SW002', 'Brown Sugar', 'Preferred for iced drinks.', 'Sweeteners', 'kg', '2026-03-01', 1, 10, '2025-09-19 13:10:56', '2025-09-30 02:35:50', 2, 0, NULL),
-(15, 'OT001', 'Ice Cubes', 'Packaged ice for cold drinks.', 'Other', 'kg', '2025-10-01', 10, 100, '2025-09-19 13:10:56', NULL, 1, 0, NULL),
-(16, 'OT002', 'Whipped Cream', 'Used as topping for frappes.', 'Dairy', 'can', '2025-11-01', 5, 20, '2025-09-19 13:10:56', '2025-09-30 01:25:34', 2, 0, NULL),
-(33, 'PROD-20250930-588', 'beans', 'beans', '', 'kg', NULL, 900, 0, '2025-09-30 01:26:44', '2025-09-30 01:27:50', 2, 0, NULL),
+(7, 'SY002', 'Caramel Syrup', 'Used in caramel macchiatos and frappes.', 'Syrups', 'bottle', '2026-01-01', 5, 30, '2025-09-19 13:10:56', '2025-10-13 00:27:21', 1, 20, 125.00),
+(9, 'CP001', '12oz Paper Cups', 'Standard serving cups for hot beverages.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-13 00:48:26', 2, 348, 15.00),
+(10, 'CP002', '16oz Paper Cups', 'Larger size for iced drinks.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-13 00:26:05', 2, 474, 20.00),
+(11, 'CP003', 'Cup Lids', 'Lids compatible with 12oz and 16oz cups.', 'Packaging', 'pcs', NULL, 200, 2000, '2025-09-19 13:10:56', '2025-10-13 00:26:26', 2, 500, 50.00),
+(12, 'SW001', 'White Sugar', 'Used in all beverages.', 'Sweeteners', 'kg', '2026-03-01', 2, 20, '2025-09-19 13:10:56', '2025-10-13 00:23:58', 1, 0, 150.00),
+(13, 'SW002', 'Brown Sugar', 'Preferred for iced drinks.', 'Sweeteners', 'kg', '2026-03-01', 1, 10, '2025-09-19 13:10:56', '2025-10-13 00:24:43', 2, 10, 120.00),
+(15, 'OT001', 'Ice Cubes', 'Packaged ice for cold drinks.', 'Other', 'kg', '2025-10-01', 10, 100, '2025-09-19 13:10:56', '2025-10-13 00:23:19', 1, 0, 15.00),
+(16, 'OT002', 'Whipped Cream', 'Used as topping for frappes.', 'Dairy', 'can', '2025-11-01', 5, 20, '2025-09-19 13:10:56', '2025-10-13 00:23:00', 2, 10, 80.00),
+(33, 'PROD-20250930-588', 'beans', 'beans', '', 'kg', NULL, 900, 0, '2025-09-30 01:26:44', '2025-10-13 00:21:50', 2, 0, 100.00),
 (34, 'PROD-20250930-379', 'new', 'new', '', 'pcs', NULL, 50, 100, '2025-09-30 01:35:32', '2025-09-30 01:41:40', 2, 0, NULL),
-(35, 'PROD-20250930-263', 'kopi', 'kopi', '', 'g', NULL, 0, 10, '2025-09-30 01:45:14', '2025-09-30 01:46:05', 2, 0, NULL),
-(36, 'PROD-20250930-983', 'VanillaMilk', 'milk', 'beverage', 'ml', '2025-09-10', 20, 30, '2025-09-30 02:22:43', '2025-09-30 02:31:37', 1, 0, NULL),
-(38, 'PROD-20250930-852', 'chocolate syrup', 'chocolate syrup', '', 'ml', NULL, 0, 0, '2025-09-30 02:41:58', '2025-10-12 06:45:39', 2, -21, NULL),
+(35, 'PROD-20250930-263', 'kopi', 'kopi', '', 'g', NULL, 0, 10, '2025-09-30 01:45:14', '2025-10-13 00:21:05', 2, 0, 75.00),
+(36, 'PROD-20250930-983', 'VanillaMilk', 'milk', 'beverage', 'ml', '2025-09-10', 20, 30, '2025-09-30 02:22:43', '2025-10-13 00:20:33', 1, 0, 150.00),
+(38, 'PROD-20250930-852', 'chocolate syrup', 'chocolate syrup', '', 'ml', NULL, 0, 0, '2025-09-30 02:41:58', '2025-10-13 00:19:51', 2, -21, 200.00),
 (39, 'OT0011', 'Banana', '', '', 'pcs', '2025-11-28', 300, 0, '2025-10-06 17:30:49', '2025-10-12 08:30:03', 1, 291, 15.00),
 (40, 'OT0012', 'Milk', '', '', 'pcs', '2025-11-22', 30, 0, '2025-10-06 17:31:27', '2025-10-11 07:40:48', 2, 40, 125.00),
 (41, 'OT0013', 'Yogurt', '', '', 'pcs', '2025-11-29', 50, 0, '2025-10-06 17:32:13', '2025-10-06 17:33:03', 2, 100, 100.00);
@@ -773,19 +778,19 @@ CREATE TABLE `product_locations` (
 
 INSERT INTO `product_locations` (`product_id`, `location_id`, `quantity`) VALUES
 (6, 1, 10),
-(7, 1, 10),
-(9, 2, 499),
-(10, 2, 474),
-(11, 2, 1000),
-(12, 1, 10),
+(7, 1, 20),
+(9, 2, 349),
+(10, 2, 500),
+(11, 2, 500),
+(12, 1, 0),
 (13, 2, 0),
-(15, 1, 102),
-(16, 2, 0),
-(33, 2, 30),
+(15, 1, 0),
+(16, 2, 10),
+(33, 2, 0),
 (34, 2, 0),
-(35, 2, 505),
-(36, 1, 420),
-(38, 2, 29),
+(35, 2, 0),
+(36, 1, 0),
+(38, 2, 0),
 (39, 1, 291),
 (40, 2, 40),
 (41, 2, 100);
@@ -1003,8 +1008,10 @@ INSERT INTO `sales_orders` (`id`, `order_number`, `customer_id`, `status`, `subt
 (8, 'SO-1760250837', 4, 'delivered', 70.00, 50.00, 50.00, 52.50, '2025-10-12 14:35:52', '2025-10-12 14:45:39', 'SI-20251012-440', 'synced', NULL, NULL),
 (9, 'SO-1760257182', 5, 'delivered', 30.00, 25.00, 10.00, 24.75, '2025-10-12 16:20:18', '2025-10-12 16:20:29', 'SI-20251012-824', 'synced', NULL, NULL),
 (10, 'SO-1760257552', 4, 'pending', 25.00, 10.00, 15.00, 25.87, '2025-10-12 16:26:48', NULL, NULL, 'pending', NULL, NULL),
-(12, 'SO-1760258631', 8, 'pending', 15.00, 0.00, 0.00, 15.00, '2025-10-12 16:44:06', NULL, NULL, 'pending', NULL, NULL),
-(13, 'SO-1760260356', 9, 'pending', 15.00, 10.00, 20.00, 16.20, '2025-10-12 17:13:02', NULL, NULL, 'pending', NULL, NULL);
+(14, 'SO-1760315961', 8, 'delivered', 15.00, 67.00, 0.00, 4.95, '2025-10-13 08:40:15', '2025-10-13 08:48:26', NULL, 'failed', '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', NULL),
+(16, 'SO-1760321851', 9, 'pending', 15.00, 15.00, 5.00, 13.39, '2025-10-13 10:18:35', NULL, NULL, 'pending', NULL, NULL),
+(17, 'SO-1760323091', 4, 'pending', 75.00, 50.00, 15.00, 43.13, '2025-10-13 10:38:32', NULL, NULL, 'pending', NULL, NULL),
+(18, 'SO-1760323183', 5, 'pending', 75.00, 0.00, 0.00, 75.00, '2025-10-13 10:39:50', NULL, NULL, 'pending', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1032,8 +1039,10 @@ INSERT INTO `sales_order_items` (`id`, `sales_order_id`, `product_id`, `descript
 (8, 8, 38, 'chocolate syrup (PROD-20250930-852)', 1, 70.00, 70.00, 0.00, 0.00),
 (9, 9, 39, 'Banana (OT0011)', 2, 15.00, 30.00, 0.00, 0.00),
 (10, 10, 13, 'Brown Sugar (SW002)', 1, 25.00, 25.00, 0.00, 0.00),
-(12, 12, 39, 'Banana (OT0011)', 1, 15.00, 15.00, 0.00, 0.00),
-(13, 13, 39, 'Banana (OT0011)', 1, 15.00, 15.00, 0.00, 0.00);
+(14, 14, 9, '12oz Paper Cups (CP001)', 1, 15.00, 15.00, 0.00, 0.00),
+(37, 16, 9, '12oz Paper Cups (CP001)', 1, 15.00, 15.00, 0.00, 0.00),
+(38, 17, 35, 'kopi (PROD-20250930-263)', 1, 75.00, 75.00, 0.00, 0.00),
+(39, 18, 35, 'kopi (PROD-20250930-263)', 1, 75.00, 75.00, 0.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -1094,7 +1103,8 @@ INSERT INTO `stock_transactions` (`id`, `product_id`, `location_from`, `location
 (56, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760241877', '2025-10-12 12:07:07', 'system', NULL, NULL, NULL),
 (57, 38, 2, NULL, 1, '', NULL, 'Sales order #SO-1760250837', '2025-10-12 14:45:39', 'system', NULL, NULL, NULL),
 (58, 39, 1, NULL, 2, '', NULL, 'Sales order #SO-1760257182', '2025-10-12 16:20:29', 'system', NULL, NULL, NULL),
-(59, 39, 1, NULL, 1, '', NULL, 'Sales order #SO-1760257775', '2025-10-12 16:30:03', 'system', NULL, NULL, NULL);
+(59, 39, 1, NULL, 1, '', NULL, 'Sales order #SO-1760257775', '2025-10-12 16:30:03', 'system', NULL, NULL, NULL),
+(60, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760315961', '2025-10-13 08:48:26', 'system', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1481,13 +1491,13 @@ ALTER TABLE `communications`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `customer_finance`
 --
 ALTER TABLE `customer_finance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `customer_invoices`
@@ -1499,7 +1509,7 @@ ALTER TABLE `customer_invoices`
 -- AUTO_INCREMENT for table `customer_leads`
 --
 ALTER TABLE `customer_leads`
-  MODIFY `lead_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `lead_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `customer_segments`
@@ -1535,7 +1545,7 @@ ALTER TABLE `invoice_reminders`
 -- AUTO_INCREMENT for table `invoice_sync_logs`
 --
 ALTER TABLE `invoice_sync_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `locations`
@@ -1607,19 +1617,19 @@ ALTER TABLE `quotation_items`
 -- AUTO_INCREMENT for table `sales_orders`
 --
 ALTER TABLE `sales_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `sales_order_items`
 --
 ALTER TABLE `sales_order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `stock_transactions`
 --
 ALTER TABLE `stock_transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `suppliers`

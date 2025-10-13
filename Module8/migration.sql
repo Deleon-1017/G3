@@ -136,6 +136,16 @@ CREATE TABLE IF NOT EXISTS invoice_sync_logs (
   FOREIGN KEY (sales_order_id) REFERENCES sales_orders(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS invoice_sync_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sales_order_id INT NOT NULL,
+  attempt_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  http_code INT DEFAULT NULL,
+  response TEXT DEFAULT NULL,
+  success TINYINT(1) DEFAULT 0,
+  FOREIGN KEY (sales_order_id) REFERENCES sales_orders(id) ON DELETE CASCADE
+);
+
 -- Indexes for reporting
 -- Indexes for reporting
 -- Note: MySQL/MariaDB does not support CREATE INDEX IF NOT EXISTS. If you want to

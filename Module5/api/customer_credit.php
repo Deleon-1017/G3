@@ -22,18 +22,9 @@ try {
   } elseif ($row['outstanding_balance'] == 0.00) {
     echo json_encode(['status' => 'error', 'message' => 'Outstanding balance is zero, cannot confirm order']);
   } elseif ($order_id > 0) {
-    // Check if outstanding balance is less than any unit price in the order
-    $stmt_items = $pdo->prepare("SELECT unit_price FROM sales_order_items WHERE sales_order_id = ?");
-    $stmt_items->execute([$order_id]);
-    $has_insufficient = false;
-    while ($item = $stmt_items->fetch(PDO::FETCH_ASSOC)) {
-      if ($row['outstanding_balance'] < $item['unit_price']) {
-        $has_insufficient = true;
-        break;
-      }
-    }
-    if ($has_insufficient) {
-      echo json_encode(['status' => 'error', 'message' => 'Outstanding balance is less than unit price of some products']);
+    // Check if outstanding balance is less than the calculated total price (after discount and tax)
+    if ($row['outstanding_balance'] < $amount) {
+      echo json_encode(['status' => 'error', 'message' => 'Outstanding balance is less than the calculated total price of the order']);
     } elseif ($row['outstanding_balance'] + $amount > $row['credit_limit']) {
       echo json_encode(['status' => 'error', 'message' => 'Insufficient credit for this order']);
     } else {

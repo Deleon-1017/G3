@@ -225,8 +225,8 @@ require '../shared/config.php';
           <tr>
             <td><select id="product_select" class="line-input" onchange="onProductChange()"><option value="">Select Product</option></select></td>
             <td><input id="qty" type="number" value="1" style="width:80px" oninput="updateLineTotal()"></td>
-            <td><input id="unit_price" type="number" step="0.01" value="0" style="width:120px" oninput="updateLineTotal()"></td>
-            <td><span id="line_total_display" style="display:inline-block;width:120px;text-align:center">₱0.00</span></td>
+            <td><span id="unit_price_display" style="display:none;width:120px;text-align:center">₱0.00</span><input id="unit_price" type="hidden" value="0"></td>
+            <td><span id="line_total_display" style="display:inline-block;width:120px;text-align:center"></span></td>
             <td><button class="btn" onclick="addItem()">Add</button></td>
           </tr>
         </tbody>
@@ -259,19 +259,35 @@ require '../shared/config.php';
   let products = [];
 
   async function loadCustomers(){
-    const res = await fetch('Module8/api/customers.php?action=list');
-    const j = await res.json();
-    const sel = document.getElementById('customer');
-    sel.innerHTML = '<option value="">-- Select Customer --</option>' + j.data.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    try {
+      const res = await fetch('Module8/api/customers.php?action=list');
+      const j = await res.json();
+      if (j.status === 'success') {
+        const sel = document.getElementById('customer');
+        sel.innerHTML = '<option value="">-- Select Customer --</option>' + j.data.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+      } else {
+        alert('Failed to load customers: ' + (j.message || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('Error loading customers: ' + error.message);
+      console.error('loadCustomers error:', error);
+    }
   }
 
   async function loadProducts(){
-    const res = await fetch('Module8/api/products.php?action=list');
-    const j = await res.json();
-    if (j.status === 'success') {
-      products = j.data;
-      const sel = document.getElementById('product_select');
-      sel.innerHTML = '<option value="">Select Product</option>' + j.data.map(p => `<option value="${p.id}" data-price="${p.unit_price}">${p.name} (${p.sku})</option>`).join('');
+    try {
+      const res = await fetch('Module8/api/products.php?action=list');
+      const j = await res.json();
+      if (j.status === 'success') {
+        products = j.data;
+        const sel = document.getElementById('product_select');
+        sel.innerHTML = '<option value="">Select Product</option>' + j.data.map(p => `<option value="${p.id}" data-price="${p.unit_price}">${p.name} (${p.sku})</option>`).join('');
+      } else {
+        alert('Failed to load products: ' + (j.message || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('Error loading products: ' + error.message);
+      console.error('loadProducts error:', error);
     }
   }
 
@@ -279,18 +295,19 @@ require '../shared/config.php';
     const pid = document.getElementById('product_select').value;
     if (!pid) { alert('Select a product'); return; }
     const product = products.find(p => p.id == pid);
-    const pname = product ? product.name + ' (' + product.sku + ')' : '';
-    const qty = parseInt(document.getElementById('qty').value) || 1;
-    const up = parseFloat(document.getElementById('unit_price').value) || (product ? product.unit_price : 0);
+    if (!product) { alert('Product not found'); return; }
+    const pname = product.name + ' (' + product.sku + ')';
+    const qty = parseFloat(document.getElementById('qty').value) || 1;
+    const up = parseFloat(product.unit_price);
     const line = {product_id: pid, description: pname, qty: qty, unit_price: up, line_total: (qty*up)};
     items.push(line);
     renderItems();
-    document.getElementById('product_select').value=''; document.getElementById('unit_price').value=0; document.getElementById('qty').value=1;
+    document.getElementById('product_select').value=''; document.getElementById('unit_price_display').style.display = 'none'; document.getElementById('qty').value=1;
     updateLineTotal();
   }
 
   function updateLineTotal(){
-    const qty = parseInt(document.getElementById('qty').value) || 0;
+    const qty = parseFloat(document.getElementById('qty').value) || 0;
     const up = parseFloat(document.getElementById('unit_price').value) || 0;
     const total = qty * up;
     document.getElementById('line_total_display').innerText = '₱' + total.toFixed(2);
@@ -302,10 +319,15 @@ require '../shared/config.php';
       const product = products.find(p => p.id == pid);
       if (product) {
         document.getElementById('unit_price').value = product.unit_price;
+        document.getElementById('unit_price_display').innerText = '₱' + parseFloat(product.unit_price).toFixed(2);
+        document.getElementById('unit_price_display').style.display = 'inline-block';
+        document.getElementById('line_total_display').style.display = 'inline-block';
         updateLineTotal();
       }
     } else {
-      document.getElementById('unit_price').value = 0;
+      document.getElementById('unit_price').value = '0';
+      document.getElementById('unit_price_display').style.display = 'none';
+      document.getElementById('line_total_display').style.display = 'none';
       updateLineTotal();
     }
   }

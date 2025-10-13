@@ -61,7 +61,13 @@ try {
       $pdo->prepare("DELETE FROM sales_order_items WHERE sales_order_id = ?")->execute([$id]);
       $ins = $pdo->prepare("INSERT INTO sales_order_items (sales_order_id,product_id,description,qty,unit_price,line_total) VALUES (?,?,?,?,?,?)");
       foreach ($items as $it) {
-        $ins->execute([$id,$it['product_id'],$it['description'],$it['qty'],$it['unit_price'],$it['line_total']]);
+        // Fetch unit_price from products table
+        $prod_stmt = $pdo->prepare("SELECT unit_price FROM products WHERE id = ?");
+        $prod_stmt->execute([$it['product_id']]);
+        $prod = $prod_stmt->fetch(PDO::FETCH_ASSOC);
+        $unit_price = $prod ? (float)$prod['unit_price'] : 0;
+        $line_total = $unit_price * (float)$it['qty'];
+        $ins->execute([$id,$it['product_id'],$it['description'],$it['qty'],$unit_price,$line_total]);
       }
     }
 
