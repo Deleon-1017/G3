@@ -34,6 +34,7 @@ require '../shared/config.php';
       </div>
       <form id="customerForm" novalidate>
         <input type="hidden" id="cust_id" name="id">
+        <label>Code<input id="cust_code" name="code" class="line-input" readonly></label>
         <label>Name<input id="cust_name" name="name" class="line-input" required></label>
         <div class="form-row">
           <label style="flex:1">Email<input id="cust_email" name="email" type="email" class="line-input"></label>
@@ -124,6 +125,7 @@ require '../shared/config.php';
     ensureModalInit();
     document.getElementById('modalTitle').innerText = 'New Customer';
     document.getElementById('cust_id').value = '';
+    document.getElementById('cust_code').value = '';
     document.getElementById('cust_name').value = '';
     document.getElementById('cust_email').value = '';
     document.getElementById('cust_phone').value = '';
@@ -140,6 +142,7 @@ require '../shared/config.php';
     if (j.status==='success'){
       document.getElementById('modalTitle').innerText = 'Edit Customer';
   document.getElementById('cust_id').value = j.data.id;
+  document.getElementById('cust_code').value = j.data.code || '';
   document.getElementById('cust_name').value = j.data.name || '';
   document.getElementById('cust_email').value = j.data.email || '';
   document.getElementById('cust_phone').value = j.data.phone || '';
@@ -167,9 +170,11 @@ require '../shared/config.php';
   if (!name) { if (ce) { ce.innerText = 'Name is required'; ce.style.display='block'; } document.getElementById('cust_name').focus(); return; }
   if (!email && !phone) { if (ce) { ce.innerText = 'Provide at least an email or phone number'; ce.style.display='block'; } return; }
 
+    const code = document.getElementById('cust_code').value;
     const credit_limit = document.getElementById('cust_credit_limit').value;
     const outstanding_balance = document.getElementById('cust_outstanding_balance').value;
     const fd = new URLSearchParams({action:'save',name,email,phone,address,credit_limit,outstanding_balance});
+    if (code) fd.append('code', code);
     if (id) fd.append('id', id);
     try{
       ensureModalInit();
@@ -195,6 +200,8 @@ require '../shared/config.php';
   async function del(id){ if(!confirm('Delete?')) return; const r=await fetch('Module8/api/customers.php?action=delete',{method:'POST',body:new URLSearchParams({id})}); const j=await r.json(); if (j.status==='success') load(); else alert('Delete failed'); }
 
   load();
+
+  // Handle URL parameter for viewing a specific customer - removed modal opening
   </script>
 </body>
 </html>

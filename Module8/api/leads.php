@@ -86,14 +86,41 @@ try {
     $status = $_POST['status'] ?? 'New';
     $assigned_to = (int)($_POST['assigned_to'] ?? 0);
     $remarks = trim($_POST['remarks'] ?? '');
+    $converted_customer_id = isset($_POST['converted_customer_id']) ? (int)$_POST['converted_customer_id'] : null;
 
     if (!$id || !$customer_name || !$email || !$contact_number || !$assigned_to) {
       echo json_encode(['status'=>'error','message'=>'Required fields missing']);
       exit;
     }
 
-    $stmt = $pdo->prepare("UPDATE customer_leads SET customer_name=?, company_name=?, email=?, contact_number=?, lead_source=?, interest_level=?, status=?, assigned_to=?, remarks=? WHERE lead_id=?");
-    $stmt->execute([$customer_name, $company_name, $email, $contact_number, $lead_source, $interest_level, $status, $assigned_to, $remarks, $id]);
+    // If status is 'Converted' and no converted_customer_id is provided, create a new customer
+    if ($status === 'Converted' && !$converted_customer_id) {
+      // Check if a customer with this email already exists
+      $checkStmt = $pdo->prepare("SELECT id FROM customers WHERE email = ?");
+      $checkStmt->execute([$email]);
+      $existingCustomer = $checkStmt->fetch(PDO::FETCH_ASSOC);
+
+      if ($existingCustomer) {
+        $converted_customer_id = $existingCustomer['id'];
+      } else {
+        // Create new customer
+        $insertStmt = $pdo->prepare("INSERT INTO customers (name, email, phone, address) VALUES (?, ?, ?, ?)");
+        $insertStmt->execute([$customer_name, $email, $contact_number, $company_name]);
+        $converted_customer_id = $pdo->lastInsertId();
+
+        // Generate customer code
+        $code = 'CUST-' . str_pad($converted_customer_id, 3, '0', STR_PAD_LEFT);
+        $updateStmt = $pdo->prepare("UPDATE customers SET code = ? WHERE id = ?");
+        $updateStmt->execute([$code, $converted_customer_id]);
+
+        // Insert into customer_finance
+        $financeStmt = $pdo->prepare("INSERT INTO customer_finance (customer_id, credit_limit, outstanding_balance) VALUES (?, 10000, 0)");
+        $financeStmt->execute([$converted_customer_id]);
+      }
+    }
+
+    $stmt = $pdo->prepare("UPDATE customer_leads SET customer_name=?, company_name=?, email=?, contact_number=?, lead_source=?, interest_level=?, status=?, assigned_to=?, remarks=?, converted_customer_id=? WHERE lead_id=?");
+    $stmt->execute([$customer_name, $company_name, $email, $contact_number, $lead_source, $interest_level, $status, $assigned_to, $remarks, $converted_customer_id, $id]);
     echo json_encode(['status'=>'success']);
     exit;
   }

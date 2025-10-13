@@ -170,10 +170,11 @@ require '../shared/config.php';
     const res = await fetch('Module8/api/leads.php?' + params);
     const j = await res.json();
     if (j.status === 'success') {
-      const el = document.getElementById('leads_list');
+    const el = document.getElementById('leads_list');
       el.innerHTML = `<div class="leads-slider">${j.data.map(l => {
         const actions = `<button onclick="editLead(${l.lead_id})" style="background: none; border: none;" title="Edit"><i class="material-icons">edit</i></button> <button onclick="deleteLead(${l.lead_id})" style="background: none; border: none;" title="Delete"><i class="material-icons">delete</i></button>`;
-        return `<div class="lead-card"><div><strong>Name:</strong> ${l.customer_name}</div><div><strong>Email:</strong> ${l.email}</div><div><strong>Status:</strong> <span class="status-${l.status}">${l.status}</span></div><div><strong>Interest:</strong> <span class="interest-${l.interest_level}">${l.interest_level}</span></div><div><strong>Assigned:</strong> ${l.assigned_name || ''}</div><div><strong>Actions:</strong> ${actions}</div></div>`;
+        const customerLink = l.converted_customer_id ? `<a href="Module8/customers.php?id=${l.converted_customer_id}" target="_blank" style="color: #007bff; text-decoration: none;">View Customer</a>` : '';
+        return `<div class="lead-card"><div><strong>Name:</strong> ${l.customer_name}</div><div><strong>Email:</strong> ${l.email}</div><div><strong>Status:</strong> <span class="status-${l.status}">${l.status}</span></div><div><strong>Interest:</strong> <span class="interest-${l.interest_level}">${l.interest_level}</span></div><div><strong>Assigned:</strong> ${l.assigned_name || ''}</div>${customerLink ? `<div><strong>Customer:</strong> ${customerLink}</div>` : ''}<div><strong>Actions:</strong> ${actions}</div></div>`;
       }).join('')}</div>`;
     } else {
       alert('Failed to load leads: ' + (j.message || 'Unknown error'));

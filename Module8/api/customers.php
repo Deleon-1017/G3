@@ -40,7 +40,7 @@ try {
     $address = trim($_POST['address'] ?? '');
     $credit_limit = (float)($_POST['credit_limit'] ?? 10000);
     $outstanding_balance = (float)($_POST['outstanding_balance'] ?? 0);
-    $code = $_POST['code'] ?? null; // legacy
+    $code = $_POST['code'] ?? null;
     $notes = $_POST['notes'] ?? null; // legacy
 
     // Basic validation: name required, and at least one contact (email or phone)
@@ -52,8 +52,8 @@ try {
     }
 
     if ($id) {
-      $stmt = $pdo->prepare("UPDATE customers SET name=?, email=?, phone=?, address=?, code=?, notes=? WHERE id=?");
-      $stmt->execute([$name,$email,$phone,$address,$code,$notes,$id]);
+      $stmt = $pdo->prepare("UPDATE customers SET name=?, email=?, phone=?, address=? WHERE id=?");
+      $stmt->execute([$name,$email,$phone,$address,$id]);
       // Update or insert customer_finance
       $stmt2 = $pdo->prepare("INSERT INTO customer_finance (customer_id, credit_limit, outstanding_balance) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE credit_limit = VALUES(credit_limit), outstanding_balance = VALUES(outstanding_balance)");
       $stmt2->execute([$id, $credit_limit, $outstanding_balance]);
@@ -61,7 +61,7 @@ try {
       $stmt = $pdo->prepare("INSERT INTO customers (name,email,phone,address,notes) VALUES (?,?,?,?,?)");
       $stmt->execute([$name,$email,$phone,$address,$notes]);
       $new_id = $pdo->lastInsertId();
-      $code = 'CUST-' . str_pad($new_id, 3, '0', STR_PAD_LEFT);
+      $code = $code ?: 'CUST-' . str_pad($new_id, 3, '0', STR_PAD_LEFT);
       $stmt = $pdo->prepare("UPDATE customers SET code=? WHERE id=?");
       $stmt->execute([$code, $new_id]);
       // Insert customer_finance

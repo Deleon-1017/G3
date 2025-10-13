@@ -227,7 +227,7 @@ require '../shared/config.php';
             <td><input id="qty" type="number" value="1" style="width:80px" oninput="updateLineTotal()"></td>
             <td><span id="unit_price_display" style="display:none;width:120px;text-align:center">₱0.00</span><input id="unit_price" type="hidden" value="0"></td>
             <td><span id="line_total_display" style="display:inline-block;width:120px;text-align:center"></span></td>
-            <td><button class="btn" onclick="addItem()">Add</button></td>
+            <td><button id="add_button" class="btn" onclick="addItem()" style="display:none">Add</button></td>
           </tr>
         </tbody>
       </table>
@@ -302,8 +302,7 @@ require '../shared/config.php';
     const line = {product_id: pid, description: pname, qty: qty, unit_price: up, line_total: (qty*up)};
     items.push(line);
     renderItems();
-    document.getElementById('product_select').value=''; document.getElementById('unit_price_display').style.display = 'none'; document.getElementById('qty').value=1;
-    updateLineTotal();
+    document.getElementById('product_select').value=''; document.getElementById('unit_price_display').style.display = 'none'; document.getElementById('qty').value=1; document.getElementById('line_total_display').innerText = ''; document.getElementById('line_total_display').style.display = 'none';
   }
 
   function updateLineTotal(){
@@ -322,12 +321,14 @@ require '../shared/config.php';
         document.getElementById('unit_price_display').innerText = '₱' + parseFloat(product.unit_price).toFixed(2);
         document.getElementById('unit_price_display').style.display = 'inline-block';
         document.getElementById('line_total_display').style.display = 'inline-block';
+        document.getElementById('add_button').style.display = 'inline-block';
         updateLineTotal();
       }
     } else {
       document.getElementById('unit_price').value = '0';
       document.getElementById('unit_price_display').style.display = 'none';
       document.getElementById('line_total_display').style.display = 'none';
+      document.getElementById('add_button').style.display = 'none';
       updateLineTotal();
     }
   }
@@ -372,6 +373,16 @@ require '../shared/config.php';
     if (j.status==='success'){
       currentOrderId = j.id;
       alert('Order saved');
+      // Clear add item section
+      document.getElementById('product_select').value = '';
+      document.getElementById('qty').value = 1;
+      document.getElementById('unit_price').value = '0';
+      document.getElementById('unit_price_display').style.display = 'none';
+      document.getElementById('line_total_display').innerText = '';
+      document.getElementById('add_button').style.display = 'none';
+      // Clear order items section
+      items = [];
+      renderItems();
       loadOrders();
     } else {
       alert('Save failed: '+(j.message||JSON.stringify(j)));
@@ -387,7 +398,9 @@ require '../shared/config.php';
         el.innerHTML = '<table class="table orders-table"><thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>' + j.data.map(o => {
           let actions = `<button onclick="loadOrder(${o.id})" class="btn" title="View Order" style="background:none; border:none;"><i class="material-icons">visibility</i></button>`;
           if (o.status === 'pending') {
-            actions += ` <button onclick="confirmOrder(${o.id})" class="btn" title="Confirm Order" style="background:none; border:none;"><i class="material-icons">check</i></button>`;
+            actions += ` <button onclick="editOrder(${o.id})" class="btn" title="Edit Order" style="background:none; color:blue; border:none;"><i class="material-icons">edit</i></button>`;
+            actions += ` <button onclick="deleteOrder(${o.id})" class="btn" title="Delete Order" style="background:none; color:red; border:none;"><i class="material-icons">delete</i></button>`;
+            actions += ` <button onclick="confirmOrder(${o.id})" class="btn" title="Confirm Order" style="background:none; color:green; border:none;"><i class="material-icons">check</i></button>`;
           } else if (o.status === 'processed') {
             actions += `<div class="dropdown"><button class="menu-icon" onclick="toggleDropdown(${o.id})">⋮</button><div id="dropdown-${o.id}" class="dropdown-content"><a onclick="markAsShipped(${o.id})">Mark as Shipped</a><a onclick="markAsDelivered(${o.id})">Mark as Delivered</a></div></div>`;
           } else if (o.status === 'shipped') {
@@ -462,6 +475,54 @@ require '../shared/config.php';
       alert('Failed to update status: ' + (j.message || JSON.stringify(j)));
     }
     loadOrders();
+  }
+
+  async function editOrder(id) {
+    try {
+      const r = await fetch('Module8/api/sales_orders.php?action=get&id=' + id);
+      const j = await r.json();
+      if (j.status === 'success') {
+        // Populate form with order data
+        document.getElementById('customer').value = j.data.customer_id;
+        document.getElementById('order_number').value = j.data.order_number;
+        document.getElementById('discount').value = j.data.discount;
+        document.getElementById('tax').value = j.data.tax;
+        // Populate items
+        items = (j.items || []).map(it => ({
+          product_id: it.product_id,
+          description: it.description,
+          qty: parseFloat(it.qty),
+          unit_price: parseFloat(it.unit_price),
+          line_total: parseFloat(it.line_total)
+        }));
+        renderItems();
+        currentOrderId = id;
+        // Scroll to top or focus on form
+        window.scrollTo(0, 0);
+      } else {
+        alert('Failed to load order for editing: ' + (j.message || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('Error loading order for editing: ' + error.message);
+      console.error('editOrder error:', error);
+    }
+  }
+
+  async function deleteOrder(id) {
+    if (!confirm('Are you sure you want to delete this order? This action cannot be undone.')) return;
+    try {
+      const resp = await fetch('Module8/api/sales_orders.php?action=delete', {method:'POST', body: new URLSearchParams({id})});
+      const j = await resp.json();
+      if (j.status === 'success') {
+        alert('Order deleted successfully');
+        loadOrders();
+      } else {
+        alert('Failed to delete order: ' + (j.message || JSON.stringify(j)));
+      }
+    } catch (error) {
+      alert('Error deleting order: ' + error.message);
+      console.error('deleteOrder error:', error);
+    }
   }
 
   async function markAsDelivered(id) {

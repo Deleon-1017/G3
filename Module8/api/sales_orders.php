@@ -230,6 +230,21 @@ try {
 
   if ($action === 'delete') {
     $id = (int)($_POST['id'] ?? 0);
+    // Check if order is pending
+    $stmt = $pdo->prepare("SELECT status FROM sales_orders WHERE id = ?");
+    $stmt->execute([$id]);
+    $order = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$order) {
+      echo json_encode(['status'=>'error','message'=>'Order not found']);
+      exit;
+    }
+    if ($order['status'] !== 'pending') {
+      echo json_encode(['status'=>'error','message'=>'Only pending orders can be deleted']);
+      exit;
+    }
+    // Delete items first
+    $pdo->prepare("DELETE FROM sales_order_items WHERE sales_order_id = ?")->execute([$id]);
+    // Delete order
     $pdo->prepare("DELETE FROM sales_orders WHERE id = ?")->execute([$id]);
     echo json_encode(['status'=>'success']);
     exit;

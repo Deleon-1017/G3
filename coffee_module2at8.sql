@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 13, 2025 at 04:41 AM
+-- Generation Time: Oct 13, 2025 at 05:41 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -132,10 +132,12 @@ CREATE TABLE `customers` (
 
 INSERT INTO `customers` (`id`, `name`, `code`, `notes`, `created_at`, `email`, `phone`, `address`) VALUES
 (4, 'Gab De Leon', 'CUST-004', NULL, '2025-10-11 14:40:43', 'gabdeleon00@gmail.com', '09564763689', 'Sa Sunny Brooke'),
-(5, 'Juan Dela Cruz', 'CUST-005', NULL, '2025-10-12 16:18:31', 'juandelacruz@gmail.com', '09123456789', 'Trece Martires'),
-(8, 'Revlon James', 'CUST-008', NULL, '2025-10-12 16:43:46', 'icdibdbodsod@dnasklad.com', '09876543210', 'Sa Kanto lang ng Jollibee'),
-(9, 'bdassak', 'CUST-009', NULL, '2025-10-12 17:12:33', 'ksabsabaskdka@bdfbbdow.com', '0405904389429', 'bbadbjkdabjkfbdajk'),
-(11, 'sdasdsads', 'CUST-011', NULL, '2025-10-13 09:49:22', 'pendaflex@bbibbf.com', '09832617165', 'Wala');
+(5, 'Juan Dela Cruz', 'CUST-005', NULL, '2025-10-12 16:18:31', 'juandelacruz@gmail.com', '09123456789', 'Cavite City'),
+(9, 'bdassak', 'CUST-009', NULL, '2025-10-12 17:12:33', 'ksabsabaskdka@bdfbbdow.com', '0405904389429', 'bella vista'),
+(18, 'Ramon Harald', 'CUST-018', NULL, '2025-10-13 22:48:34', 'ramonharald@yahoo.com', '09123224567', 'May PBA pa pala'),
+(19, 'JM Dacer', 'CUST-019', NULL, '2025-10-13 22:56:06', 'icdibdbodsod@dnasklad.com', '09876543210', 'Robert Lang'),
+(20, 'Anette Rivera', 'CUST-020', NULL, '2025-10-13 23:34:46', 'anette.16@gmail.com', '09651016021', 'Tourism Management'),
+(21, 'Manny Pacute', 'CUST-021', NULL, '2025-10-13 23:39:53', 'manny@gmail.com', '09097743269', 'Davao City');
 
 -- --------------------------------------------------------
 
@@ -157,14 +159,24 @@ CREATE TABLE `customer_finance` (
 --
 
 INSERT INTO `customer_finance` (`id`, `customer_id`, `credit_limit`, `outstanding_balance`, `created_at`, `updated_at`) VALUES
-(3, 4, 10000.00, 7551.00, '2025-10-11 06:40:43', '2025-10-12 06:45:39'),
-(4, 5, 20000.00, 19475.25, '2025-10-12 08:18:31', '2025-10-12 08:20:29'),
+(3, 4, 10000.00, 7536.82, '2025-10-11 06:40:43', '2025-10-13 12:14:54'),
+(4, 5, 20000.00, 9985.00, '2025-10-12 08:18:31', '2025-10-13 15:41:12'),
 (5, 6, 10000.00, 0.00, '2025-10-12 08:29:16', '2025-10-12 08:30:03'),
 (6, 7, 10000.00, 5.00, '2025-10-12 08:43:09', '2025-10-12 08:43:21'),
-(8, 8, 10000.00, 0.05, '2025-10-12 08:43:46', '2025-10-13 00:48:26'),
-(9, 9, 100.00, 0.00, '2025-10-12 09:12:33', '2025-10-12 09:12:33'),
+(8, 8, 10000.00, 200.00, '2025-10-12 08:43:46', '2025-10-13 14:38:39'),
+(9, 9, 100000.00, 49986.61, '2025-10-12 09:12:33', '2025-10-13 15:21:29'),
 (10, 10, 5000.00, 1500.00, '2025-10-13 01:47:05', '2025-10-13 01:47:05'),
-(12, 11, 10000.00, 1000.00, '2025-10-13 01:49:22', '2025-10-13 01:49:22');
+(12, 11, 10000.00, 100.00, '2025-10-13 01:49:22', '2025-10-13 14:29:43'),
+(13, 12, 10000.00, 1700.00, '2025-10-13 14:00:12', '2025-10-13 14:29:18'),
+(14, 13, 10000.00, 0.00, '2025-10-13 14:00:38', '2025-10-13 14:00:38'),
+(15, 14, 10000.00, 5000.00, '2025-10-13 14:20:25', '2025-10-13 14:20:40'),
+(17, 15, 10000.00, 5000.00, '2025-10-13 14:22:53', '2025-10-13 14:23:07'),
+(19, 16, 10000.00, 1000.00, '2025-10-13 14:28:11', '2025-10-13 14:28:42'),
+(23, 17, 10000.00, 501.05, '2025-10-13 14:30:37', '2025-10-13 14:45:22'),
+(34, 18, 10000.00, 1000.00, '2025-10-13 14:48:34', '2025-10-13 14:48:49'),
+(36, 19, 10000.00, 1491.75, '2025-10-13 14:56:06', '2025-10-13 14:56:55'),
+(38, 20, 10000.00, 83.50, '2025-10-13 15:34:46', '2025-10-13 15:38:16'),
+(41, 21, 10000.00, 900.00, '2025-10-13 15:39:53', '2025-10-13 15:40:28');
 
 -- --------------------------------------------------------
 
@@ -213,6 +225,7 @@ CREATE TABLE `customer_leads` (
   `status` enum('New','Contacted','Qualified','Converted','Lost') DEFAULT 'New',
   `assigned_to` int(11) NOT NULL,
   `remarks` text DEFAULT NULL,
+  `converted_customer_id` int(11) DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -221,10 +234,10 @@ CREATE TABLE `customer_leads` (
 -- Dumping data for table `customer_leads`
 --
 
-INSERT INTO `customer_leads` (`lead_id`, `customer_name`, `company_name`, `email`, `contact_number`, `lead_source`, `interest_level`, `status`, `assigned_to`, `remarks`, `created_at`, `updated_at`) VALUES
-(1, 'Papa Mo', 'The Company', 'hfehfhfe@bbbibirb.com', '09123456789', 'Call', 'Warm', 'Contacted', 8, 'Hambul lang', '2025-10-12 16:47:39', '2025-10-12 16:47:39'),
-(2, 'Notnot', 'DPWH', 'lolomopogi@gmail.com', '09876543210', 'Walk-in', 'Hot', 'Converted', 7, '', '2025-10-12 17:11:40', '2025-10-12 17:11:40'),
-(3, 'JM Dacer', 'Robert Lang', 'icdibdbodsod@dnasklad.com', '09876543210', 'Website', 'Hot', 'New', 5, '', '2025-10-12 18:54:10', '2025-10-12 18:54:10');
+INSERT INTO `customer_leads` (`lead_id`, `customer_name`, `company_name`, `email`, `contact_number`, `lead_source`, `interest_level`, `status`, `assigned_to`, `remarks`, `converted_customer_id`, `created_at`, `updated_at`) VALUES
+(3, 'JM Dacer', 'Robert Lang', 'icdibdbodsod@dnasklad.com', '09876543210', 'Website', 'Hot', 'Converted', 5, '', 19, '2025-10-12 18:54:10', '2025-10-13 22:56:06'),
+(8, 'Ramon Harald', 'May PBA pa pala', 'ramonharald@yahoo.com', '09123224567', 'Referral', 'Hot', 'Converted', 8, '', 18, '2025-10-13 22:48:26', '2025-10-13 22:48:34'),
+(9, 'Anette Rivera', 'Tourism Management', 'anette.16@gmail.com', '09651016021', 'Walk-in', 'Warm', 'Converted', 5, '', 20, '2025-10-13 23:34:39', '2025-10-13 23:34:46');
 
 -- --------------------------------------------------------
 
@@ -637,7 +650,12 @@ INSERT INTO `invoice_sync_logs` (`id`, `sales_order_id`, `attempt_at`, `http_cod
 (14, 7, '2025-10-12 12:07:07', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-681\"}', 1),
 (15, 8, '2025-10-12 14:45:39', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-440\"}', 1),
 (16, 9, '2025-10-12 16:20:29', 200, '{\"status\":\"success\",\"invoice_number\":\"SI-20251012-824\"}', 1),
-(18, 14, '2025-10-13 08:48:26', 404, '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', 0);
+(19, 19, '2025-10-13 20:14:54', 404, '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', 0),
+(20, 20, '2025-10-13 22:56:55', 404, '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', 0),
+(21, 16, '2025-10-13 23:21:29', 404, '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', 0),
+(22, 22, '2025-10-13 23:38:16', 404, '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', 0),
+(23, 23, '2025-10-13 23:40:28', 404, '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', 0),
+(24, 18, '2025-10-13 23:41:12', 404, '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', 0);
 
 -- --------------------------------------------------------
 
@@ -744,9 +762,9 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`id`, `sku`, `name`, `description`, `category`, `unit`, `expiration_date`, `min_qty`, `max_qty`, `created_at`, `updated_at`, `warehouse_id`, `total_quantity`, `unit_price`) VALUES
 (6, 'SY001', 'Vanilla Syrup', 'Used for flavored lattes.', 'Syrups', 'bottle', '2026-01-01', 5, 30, '2025-09-19 13:10:56', NULL, 1, 0, NULL),
 (7, 'SY002', 'Caramel Syrup', 'Used in caramel macchiatos and frappes.', 'Syrups', 'bottle', '2026-01-01', 5, 30, '2025-09-19 13:10:56', '2025-10-13 00:27:21', 1, 20, 125.00),
-(9, 'CP001', '12oz Paper Cups', 'Standard serving cups for hot beverages.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-13 00:48:26', 2, 348, 15.00),
-(10, 'CP002', '16oz Paper Cups', 'Larger size for iced drinks.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-13 00:26:05', 2, 474, 20.00),
-(11, 'CP003', 'Cup Lids', 'Lids compatible with 12oz and 16oz cups.', 'Packaging', 'pcs', NULL, 200, 2000, '2025-09-19 13:10:56', '2025-10-13 00:26:26', 2, 500, 50.00),
+(9, 'CP001', '12oz Paper Cups', 'Standard serving cups for hot beverages.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-13 15:41:12', 2, 344, 15.00),
+(10, 'CP002', '16oz Paper Cups', 'Larger size for iced drinks.', 'Packaging', 'pcs', NULL, 100, 1000, '2025-09-19 13:10:56', '2025-10-13 15:40:28', 2, 469, 20.00),
+(11, 'CP003', 'Cup Lids', 'Lids compatible with 12oz and 16oz cups.', 'Packaging', 'pcs', NULL, 200, 2000, '2025-09-19 13:10:56', '2025-10-13 15:38:16', 2, 499, 50.00),
 (12, 'SW001', 'White Sugar', 'Used in all beverages.', 'Sweeteners', 'kg', '2026-03-01', 2, 20, '2025-09-19 13:10:56', '2025-10-13 00:23:58', 1, 0, 150.00),
 (13, 'SW002', 'Brown Sugar', 'Preferred for iced drinks.', 'Sweeteners', 'kg', '2026-03-01', 1, 10, '2025-09-19 13:10:56', '2025-10-13 00:24:43', 2, 10, 120.00),
 (15, 'OT001', 'Ice Cubes', 'Packaged ice for cold drinks.', 'Other', 'kg', '2025-10-01', 10, 100, '2025-09-19 13:10:56', '2025-10-13 00:23:19', 1, 0, 15.00),
@@ -779,9 +797,9 @@ CREATE TABLE `product_locations` (
 INSERT INTO `product_locations` (`product_id`, `location_id`, `quantity`) VALUES
 (6, 1, 10),
 (7, 1, 20),
-(9, 2, 349),
-(10, 2, 500),
-(11, 2, 500),
+(9, 2, 345),
+(10, 2, 495),
+(11, 2, 499),
 (12, 1, 0),
 (13, 2, 0),
 (15, 1, 0),
@@ -941,10 +959,9 @@ CREATE TABLE `quotations` (
 --
 
 INSERT INTO `quotations` (`id`, `quote_number`, `customer_id`, `status`, `subtotal`, `discount`, `tax`, `total`, `expiry_date`, `notes`, `terms`, `created_by`, `created_at`, `updated_at`) VALUES
-(3, 'Q-2025-0001', 4, 'draft', 60.00, 30.00, 10.00, 40.00, '2026-11-14', NULL, NULL, NULL, '2025-10-11 20:29:12', '2025-10-11 20:29:12'),
-(4, 'Q-2025-0002', 4, 'draft', 60.00, 0.00, 0.00, 60.00, '2026-04-18', NULL, NULL, NULL, '2025-10-11 20:33:12', '2025-10-11 20:33:12'),
-(6, 'Q-2025-0003', 5, 'draft', 1291.00, 65.00, 35.00, 1261.00, '2025-12-31', NULL, NULL, NULL, '2025-10-12 16:19:32', '2025-10-12 16:19:32'),
-(7, 'Q-2025-0004', 8, 'draft', 10.00, 15.00, 10.00, 5.00, '2026-01-01', NULL, NULL, NULL, '2025-10-12 16:46:16', '2025-10-12 16:46:16');
+(3, 'Q-2025-0001', 4, 'rejected', 60.00, 30.00, 10.00, 40.00, '2026-11-14', NULL, NULL, NULL, '2025-10-11 20:29:12', '2025-10-13 23:32:39'),
+(4, 'Q-2025-0002', 4, 'accepted', 60.00, 0.00, 0.00, 60.00, '2026-04-18', NULL, NULL, NULL, '2025-10-11 20:33:12', '2025-10-13 23:32:34'),
+(6, 'Q-2025-0003', 5, 'sent', 1291.00, 65.00, 35.00, 1261.00, '2025-12-31', NULL, NULL, NULL, '2025-10-12 16:19:32', '2025-10-13 23:32:25');
 
 -- --------------------------------------------------------
 
@@ -967,11 +984,10 @@ CREATE TABLE `quotation_items` (
 --
 
 INSERT INTO `quotation_items` (`id`, `quotation_id`, `product_id`, `description`, `qty`, `unit_price`, `line_total`) VALUES
-(3, 3, 40, 'Milk', 6, 10.00, 60.00),
-(4, 4, 11, 'Cup Lids', 2, 30.00, 60.00),
-(6, 6, 36, 'VanillaMilk', 1, 70.00, 70.00),
-(7, 6, 41, 'Yogurt', 11, 111.00, 1221.00),
-(8, 7, 35, 'kopi', 1, 10.00, 10.00);
+(11, 6, 36, 'VanillaMilk', 1, 150.00, 150.00),
+(12, 6, 41, 'Yogurt', 11, 100.00, 1100.00),
+(13, 4, 11, 'Cup Lids', 2, 50.00, 100.00),
+(14, 3, 40, 'Milk', 6, 125.00, 750.00);
 
 -- --------------------------------------------------------
 
@@ -1008,10 +1024,13 @@ INSERT INTO `sales_orders` (`id`, `order_number`, `customer_id`, `status`, `subt
 (8, 'SO-1760250837', 4, 'delivered', 70.00, 50.00, 50.00, 52.50, '2025-10-12 14:35:52', '2025-10-12 14:45:39', 'SI-20251012-440', 'synced', NULL, NULL),
 (9, 'SO-1760257182', 5, 'delivered', 30.00, 25.00, 10.00, 24.75, '2025-10-12 16:20:18', '2025-10-12 16:20:29', 'SI-20251012-824', 'synced', NULL, NULL),
 (10, 'SO-1760257552', 4, 'pending', 25.00, 10.00, 15.00, 25.87, '2025-10-12 16:26:48', NULL, NULL, 'pending', NULL, NULL),
-(14, 'SO-1760315961', 8, 'delivered', 15.00, 67.00, 0.00, 4.95, '2025-10-13 08:40:15', '2025-10-13 08:48:26', NULL, 'failed', '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', NULL),
-(16, 'SO-1760321851', 9, 'pending', 15.00, 15.00, 5.00, 13.39, '2025-10-13 10:18:35', NULL, NULL, 'pending', NULL, NULL),
+(16, 'SO-1760321851', 9, 'shipped', 15.00, 15.00, 5.00, 13.39, '2025-10-13 10:18:35', '2025-10-13 23:21:29', NULL, 'failed', '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', NULL),
 (17, 'SO-1760323091', 4, 'pending', 75.00, 50.00, 15.00, 43.13, '2025-10-13 10:38:32', NULL, NULL, 'pending', NULL, NULL),
-(18, 'SO-1760323183', 5, 'pending', 75.00, 0.00, 0.00, 75.00, '2025-10-13 10:39:50', NULL, NULL, 'pending', NULL, NULL);
+(18, 'SO-1760323183', 5, 'processed', 15.00, 0.00, 0.00, 15.00, '2025-10-13 10:39:50', '2025-10-13 23:41:12', NULL, 'failed', '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', NULL),
+(19, 'SO-1760357638', 4, 'delivered', 15.00, 10.00, 5.00, 14.18, '2025-10-13 20:14:45', '2025-10-13 20:14:54', NULL, 'failed', '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', NULL),
+(20, 'SO-1760367385', 19, 'delivered', 15.00, 50.00, 10.00, 8.25, '2025-10-13 22:56:46', '2025-10-13 22:56:55', NULL, 'failed', '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', NULL),
+(22, 'SO-1760369709', 20, 'processed', 50.00, 70.00, 10.00, 16.50, '2025-10-13 23:35:31', '2025-10-13 23:38:16', NULL, 'failed', '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', NULL),
+(23, 'SO-1760370009', 21, 'processed', 100.00, 0.00, 0.00, 100.00, '2025-10-13 23:40:24', '2025-10-13 23:40:28', NULL, 'failed', '<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n<hr>\n<address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>\n</body></html>\n', NULL);
 
 -- --------------------------------------------------------
 
@@ -1039,10 +1058,13 @@ INSERT INTO `sales_order_items` (`id`, `sales_order_id`, `product_id`, `descript
 (8, 8, 38, 'chocolate syrup (PROD-20250930-852)', 1, 70.00, 70.00, 0.00, 0.00),
 (9, 9, 39, 'Banana (OT0011)', 2, 15.00, 30.00, 0.00, 0.00),
 (10, 10, 13, 'Brown Sugar (SW002)', 1, 25.00, 25.00, 0.00, 0.00),
-(14, 14, 9, '12oz Paper Cups (CP001)', 1, 15.00, 15.00, 0.00, 0.00),
 (37, 16, 9, '12oz Paper Cups (CP001)', 1, 15.00, 15.00, 0.00, 0.00),
 (38, 17, 35, 'kopi (PROD-20250930-263)', 1, 75.00, 75.00, 0.00, 0.00),
-(39, 18, 35, 'kopi (PROD-20250930-263)', 1, 75.00, 75.00, 0.00, 0.00);
+(40, 19, 9, '12oz Paper Cups (CP001)', 1, 15.00, 15.00, 0.00, 0.00),
+(41, 20, 9, '12oz Paper Cups (CP001)', 1, 15.00, 15.00, 0.00, 0.00),
+(44, 22, 11, 'Cup Lids (CP003)', 1, 50.00, 50.00, 0.00, 0.00),
+(45, 23, 10, '16oz Paper Cups (CP002)', 5, 20.00, 100.00, 0.00, 0.00),
+(46, 18, 9, '12oz Paper Cups (CP001)', 1, 15.00, 15.00, 0.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -1104,7 +1126,13 @@ INSERT INTO `stock_transactions` (`id`, `product_id`, `location_from`, `location
 (57, 38, 2, NULL, 1, '', NULL, 'Sales order #SO-1760250837', '2025-10-12 14:45:39', 'system', NULL, NULL, NULL),
 (58, 39, 1, NULL, 2, '', NULL, 'Sales order #SO-1760257182', '2025-10-12 16:20:29', 'system', NULL, NULL, NULL),
 (59, 39, 1, NULL, 1, '', NULL, 'Sales order #SO-1760257775', '2025-10-12 16:30:03', 'system', NULL, NULL, NULL),
-(60, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760315961', '2025-10-13 08:48:26', 'system', NULL, NULL, NULL);
+(60, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760315961', '2025-10-13 08:48:26', 'system', NULL, NULL, NULL),
+(61, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760357638', '2025-10-13 20:14:54', 'system', NULL, NULL, NULL),
+(62, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760367385', '2025-10-13 22:56:55', 'system', NULL, NULL, NULL),
+(63, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760321851', '2025-10-13 23:21:29', 'system', NULL, NULL, NULL),
+(64, 11, 2, NULL, 1, '', NULL, 'Sales order #SO-1760369709', '2025-10-13 23:38:16', 'system', NULL, NULL, NULL),
+(65, 10, 2, NULL, 5, '', NULL, 'Sales order #SO-1760370009', '2025-10-13 23:40:28', 'system', NULL, NULL, NULL),
+(66, 9, 2, NULL, 1, '', NULL, 'Sales order #SO-1760323183', '2025-10-13 23:41:12', 'system', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1243,7 +1271,8 @@ ALTER TABLE `customer_invoices`
 ALTER TABLE `customer_leads`
   ADD PRIMARY KEY (`lead_id`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `assigned_to` (`assigned_to`);
+  ADD KEY `assigned_to` (`assigned_to`),
+  ADD KEY `idx_customer_leads_converted_customer` (`converted_customer_id`);
 
 --
 -- Indexes for table `customer_segments`
@@ -1491,13 +1520,13 @@ ALTER TABLE `communications`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `customer_finance`
 --
 ALTER TABLE `customer_finance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `customer_invoices`
@@ -1509,7 +1538,7 @@ ALTER TABLE `customer_invoices`
 -- AUTO_INCREMENT for table `customer_leads`
 --
 ALTER TABLE `customer_leads`
-  MODIFY `lead_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `lead_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `customer_segments`
@@ -1545,7 +1574,7 @@ ALTER TABLE `invoice_reminders`
 -- AUTO_INCREMENT for table `invoice_sync_logs`
 --
 ALTER TABLE `invoice_sync_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `locations`
@@ -1611,25 +1640,25 @@ ALTER TABLE `quotations`
 -- AUTO_INCREMENT for table `quotation_items`
 --
 ALTER TABLE `quotation_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `sales_orders`
 --
 ALTER TABLE `sales_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `sales_order_items`
 --
 ALTER TABLE `sales_order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `stock_transactions`
 --
 ALTER TABLE `stock_transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
@@ -1678,7 +1707,8 @@ ALTER TABLE `communications`
 -- Constraints for table `customer_leads`
 --
 ALTER TABLE `customer_leads`
-  ADD CONSTRAINT `customer_leads_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `customer_leads_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_lead_customer` FOREIGN KEY (`converted_customer_id`) REFERENCES `customers` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `goods_receipts`

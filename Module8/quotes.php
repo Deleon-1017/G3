@@ -51,6 +51,12 @@ require '../shared/config.php';
           <label style="flex:1">Total<input id="quote_total" name="total" type="number" class="line-input" readonly></label>
         </div>
         <label>Expiry Date<input id="quote_expiry_date" name="expiry_date" type="date" class="line-input"></label>
+        <label>Status<select id="quote_status" name="status" class="line-input">
+          <option value="draft">Draft</option>
+          <option value="sent">Sent</option>
+          <option value="accepted">Accepted</option>
+          <option value="rejected">Rejected</option>
+        </select></label>
         <input type="hidden" id="quote_id" name="id">
         <input type="hidden" id="quote_quote_number" name="quote_number">
         <div class="error" id="quoteError" style="display:none"></div>
@@ -95,11 +101,12 @@ require '../shared/config.php';
       document.getElementById('quote_tax').value = j.data.tax || '0';
       document.getElementById('quote_total').value = j.data.total || '';
       document.getElementById('quote_expiry_date').value = j.data.expiry_date || '';
+      document.getElementById('quote_status').value = j.data.status || 'draft';
       window.items = j.items || [];
       ensureModalInit();
       await loadCustomers();
       document.getElementById('quote_customer_id').value = j.data.customer_id || '';
-      document.querySelector('label').innerHTML = `<h3>Customer: ${j.data.customer_name}</h3>`;
+      document.getElementById('quote_customer_id').readOnly = true;
       await loadProducts();
       document.getElementById('itemsBody').innerHTML = '';
       window.items.forEach((item, idx) => {
@@ -115,6 +122,7 @@ require '../shared/config.php';
         `;
         tbody.appendChild(row);
       });
+      if (window.hideModal) window.hideModal();
       if (window.showModal) window.showModal();
     } else {
       alert('Unable to load quote');
@@ -208,6 +216,7 @@ require '../shared/config.php';
     document.getElementById('quote_tax').value = '0';
     document.getElementById('quote_total').value = '';
     document.getElementById('quote_expiry_date').value = '';
+    document.getElementById('quote_status').value = 'draft';
     document.getElementById('quote_id').value = '';
     document.getElementById('quote_quote_number').value = '';
     window.items = [];
@@ -228,7 +237,7 @@ require '../shared/config.php';
     row.innerHTML = `
       <td><select class="line-input" onchange="updateItem(${idx})"><option value="">Select Product</option>${productOptions}</select></td>
       <td><input type="number" class="line-input" placeholder="Qty" min="1" value="1" oninput="updateItem(${idx})"></td>
-      <td><input type="number" class="line-input" placeholder="Unit Price" step="0.01" oninput="updateItem(${idx})"></td>
+      <td><input type="number" class="line-input" placeholder="Unit Price" step="0.01" readonly></td>
       <td><input type="number" class="line-input" placeholder="Line Total" readonly></td>
       <td><button type="button" class="btn" onclick="removeItemRow(${idx})">Remove</button></td>
     `;
@@ -249,7 +258,8 @@ require '../shared/config.php';
     const product = window.products.find(p => p.id == product_id);
     const desc = product ? product.name : '';
     const qty = parseFloat(row.cells[1].querySelector('input').value) || 0;
-    const price = parseFloat(row.cells[2].querySelector('input').value) || 0;
+    const price = product ? parseFloat(product.unit_price) : 0;
+    row.cells[2].querySelector('input').value = price.toFixed(2);
     const total = qty * price;
     row.cells[3].querySelector('input').value = total.toFixed(2);
     window.items[idx] = {description:desc, qty, unit_price:price, line_total:total, product_id};
@@ -276,6 +286,7 @@ require '../shared/config.php';
     const tax = parseFloat(document.getElementById('quote_tax').value) || 0;
     const total = parseFloat(document.getElementById('quote_total').value) || 0;
     const expiry_date = document.getElementById('quote_expiry_date').value;
+    const status = document.getElementById('quote_status').value;
 
     // inline validation (use safe lookup for the error container)
     const qe = window.quoteError || document.getElementById('quoteError');
@@ -292,6 +303,7 @@ require '../shared/config.php';
     fd.append('tax', tax);
     fd.append('total', total);
     fd.append('expiry_date', expiry_date);
+    fd.append('status', status);
     fd.append('items', JSON.stringify(window.items));
     try{
       ensureModalInit();

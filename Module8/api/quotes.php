@@ -31,6 +31,7 @@ try {
     $tax = (float)($_POST['tax'] ?? 0);
     $total = (float)($_POST['total'] ?? 0);
     $expiry_date = $_POST['expiry_date'] ?? null;
+    $status = $_POST['status'] ?? 'draft';
     $notes = $_POST['notes'] ?? null;
     $terms = $_POST['terms'] ?? null;
     $created_by = $_POST['created_by'] ?? null;
@@ -41,11 +42,11 @@ try {
       $quote_number = 'Q-' . $year . '-' . str_pad($cnt, 4, '0', STR_PAD_LEFT);
     }
     if ($id) {
-      $pdo->prepare("UPDATE quotations SET quote_number=?, customer_id=?, subtotal=?, discount=?, tax=?, total=?, expiry_date=?, notes=?, terms=?, created_by=? WHERE id = ?")
-        ->execute([$quote_number,$customer_id,$subtotal,$discount,$tax,$total,$expiry_date,$notes,$terms,$created_by,$id]);
+      $pdo->prepare("UPDATE quotations SET quote_number=?, customer_id=?, subtotal=?, discount=?, tax=?, total=?, expiry_date=?, status=?, notes=?, terms=?, created_by=? WHERE id = ?")
+        ->execute([$quote_number,$customer_id,$subtotal,$discount,$tax,$total,$expiry_date,$status,$notes,$terms,$created_by,$id]);
     } else {
-      $pdo->prepare("INSERT INTO quotations (quote_number,customer_id,subtotal,discount,tax,total,expiry_date,notes,terms,created_by) VALUES (?,?,?,?,?,?,?,?,?,?)")
-        ->execute([$quote_number,$customer_id,$subtotal,$discount,$tax,$total,$expiry_date,$notes,$terms,$created_by]);
+      $pdo->prepare("INSERT INTO quotations (quote_number,customer_id,subtotal,discount,tax,total,expiry_date,status,notes,terms,created_by) VALUES (?,?,?,?,?,?,?,?,?,?,?)")
+        ->execute([$quote_number,$customer_id,$subtotal,$discount,$tax,$total,$expiry_date,$status,$notes,$terms,$created_by]);
       $id = $pdo->lastInsertId();
     }
     // items
