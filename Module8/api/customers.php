@@ -19,6 +19,15 @@ try {
     exit;
   }
 
+  if ($action === 'next_code') {
+    $stmt = $pdo->query("SELECT MAX(id) as max_id FROM customers");
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $next_id = ($row['max_id'] ?? 0) + 1;
+    $code = 'CUST-' . str_pad($next_id, 3, '0', STR_PAD_LEFT);
+    echo json_encode(['status'=>'success','code'=>$code]);
+    exit;
+  }
+
   if ($action === 'get') {
     $id = (int)($_GET['id'] ?? 0);
     $stmt = $pdo->prepare("SELECT c.*, cf.credit_limit, cf.outstanding_balance FROM customers c LEFT JOIN customer_finance cf ON c.id = cf.customer_id WHERE c.id = ?");

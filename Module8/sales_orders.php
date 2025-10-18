@@ -234,18 +234,68 @@ require '../shared/config.php';
     </div>
 
     <div class="card">
-      <h3>Order Items</h3>
-      <table class="table items-table">
-        <thead>
-          <tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Line Total</th><th>Subtotal</th><th>Discount</th><th>Tax</th><th>Total</th><th></th></tr>
-          <tr><td></td><td></td><td></td><td></td><td>₱<span id="subtotal">0.00</span></td><td><input id="discount" type="number" step="0.01" value="0" style="width:120px" oninput="calcTotals()"></td><td><input id="tax" type="number" step="0.01" value="0" style="width:120px" oninput="calcTotals()"></td><td>₱<span id="total">0.00</span></td><td></td></tr>
-        </thead>
-        <tbody id="items_body"></tbody>
-      </table>
-      <div style="margin-top:12px">
-        <button id="saveOrderBtn" class="btn btn-primary" onclick="saveOrder()">Save Order</button>
-      </div>
-    </div>
+  <h3>Order Items</h3>
+
+  <div class="table-responsive" style="overflow:auto;">
+    <table class="table items-table" style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="width:48%; text-align:left; padding:8px 10px;">Product</th>
+          <th style="width:10%; text-align:center; padding:8px 10px;">Qty</th>
+          <th style="width:15%; text-align:right; padding:8px 10px;">Unit Price</th>
+          <th style="width:15%; text-align:right; padding:8px 10px;">Line Total</th>
+          <th style="width:12%; text-align:center; padding:8px 10px;">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody id="items_body">
+        <!-- rows inserted by JS: ensure each row has 5 <td> matching the 5 headers above -->
+      </tbody>
+
+      <tfoot>
+        <!-- Subtotal row -->
+        <tr style="background:#f8f9fa;">
+          <td colspan="2"></td>
+          <td style="text-align:right; font-weight:600; padding:8px 10px;">Subtotal</td>
+          <td style="text-align:right; font-weight:600; padding:8px 10px;">₱<span id="subtotal">0.00</span></td>
+          <td></td>
+        </tr>
+
+        <!-- Discount row -->
+        <tr style="background:#fff;">
+          <td colspan="2"></td>
+          <td style="text-align:right; padding:8px 10px;">Discount (%)</td>
+          <td style="text-align:right; padding:8px 10px;">
+            <input id="discount" type="number" step="0.01" value="0" style="width:80px; text-align:right;" oninput="calcTotals()">
+          </td>
+          <td></td>
+        </tr>
+
+        <!-- Tax row -->
+        <tr style="background:#fff;">
+          <td colspan="2"></td>
+          <td style="text-align:right; padding:8px 10px;">Tax (%)</td>
+          <td style="text-align:right; padding:8px 10px;">
+            <input id="tax" type="number" step="0.01" value="0" style="width:80px; text-align:right;" oninput="calcTotals()">
+          </td>
+          <td></td>
+        </tr>
+
+        <!-- Total row -->
+        <tr style="background:#f1f1f1; font-weight:700;">
+          <td colspan="2"></td>
+          <td style="text-align:right; padding:8px 10px;">Total</td>
+          <td style="text-align:right; padding:8px 10px;">₱<span id="total">0.00</span></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div style="margin-top:12px; text-align:right;">
+    <button id="saveOrderBtn" class="btn btn-primary" style="display:none" onclick="saveOrder()">Save Order</button>
+  </div>
+</div>
 
     <div class="card">
       <h3>Existing Orders</h3>
@@ -335,7 +385,26 @@ require '../shared/config.php';
 
   function renderItems(){
     const body = document.getElementById('items_body');
-    body.innerHTML = items.map((it,idx)=>`<tr><td>${it.description||''}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">₱${it.unit_price.toFixed(2)}</td><td style="text-align:right">₱${(it.line_total).toFixed(2)}</td><td></td><td></td><td></td><td></td><td style="text-align:center"><button onclick="removeItem(${idx})" class="btn" style="padding:4px 8px">Remove</button></td></tr>`).join('');
+    if (!body) return;
+    body.innerHTML = items.map((it, idx) => {
+      // create consistent columns: Product | Qty | Unit Price | Line Total | Actions
+      const desc = (it.description || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const qty = Number(it.qty || 0);
+      const up = Number(it.unit_price || 0);
+      const lt = Number(it.line_total || (qty * up));
+      return `
+        <tr>
+          <td style="padding:8px 10px; vertical-align:middle;">${desc}</td>
+          <td style="text-align:center; padding:8px 10px; vertical-align:middle;">${qty}</td>
+          <td style="text-align:right; padding:8px 10px; vertical-align:middle;">₱${up.toFixed(2)}</td>
+          <td style="text-align:right; padding:8px 10px; vertical-align:middle;">₱${lt.toFixed(2)}</td>
+          <td style="text-align:center; padding:8px 10px; vertical-align:middle;">
+            <button onclick="removeItem(${idx})" class="btn" style="padding:6px 10px">Remove</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    // Recalculate totals and Save button visibility
     calcTotals();
     updateSaveButtonVisibility();
   }
@@ -344,22 +413,47 @@ require '../shared/config.php';
 
   function updateSaveButtonVisibility(){
     const btn = document.getElementById('saveOrderBtn');
-    if (items.length === 0 && !currentOrderId) {
-      btn.style.display = 'none';
-    } else {
+    if (!btn) return;
+    if ((items && items.length > 0) || currentOrderId) {
       btn.style.display = 'inline-block';
+    } else {
+      btn.style.display = 'none';
     }
   }
 
   function calcTotals(){
-    const subtotal = items.reduce((s,it)=>s + (it.line_total||0),0);
-    document.getElementById('subtotal').innerText = subtotal.toFixed(2);
-    const discount_percent = parseFloat(document.getElementById('discount').value) || 0;
-    const tax_percent = parseFloat(document.getElementById('tax').value) || 0;
-    const discounted_subtotal = subtotal * (1 - discount_percent / 100);
-    const total = discounted_subtotal * (1 + tax_percent / 100);
-    document.getElementById('total').innerText = total.toFixed(2);
+    const subtotalVal = items.reduce((s, it) => {
+      const lt = Number(it.line_total || 0);
+      return s + (isFinite(lt) ? lt : 0);
+    }, 0);
+
+    // update subtotal display
+    const subEl = document.getElementById('subtotal');
+    if (subEl) subEl.innerText = subtotalVal.toFixed(2);
+
+    // read discount and tax (percent)
+    const discountPercent = Math.max(0, parseFloat(document.getElementById('discount').value || 0));
+    const taxPercent = Math.max(0, parseFloat(document.getElementById('tax').value || 0));
+
+    // apply discount then tax (percentage)
+    const discounted = subtotalVal * (1 - (discountPercent / 100));
+    const totalVal = discounted * (1 + (taxPercent / 100));
+
+    const totalEl = document.getElementById('total');
+    if (totalEl) totalEl.innerText = totalVal.toFixed(2);
+
+    // ensure save button visibility updated (in case discount/tax input changed)
+    updateSaveButtonVisibility();
   }
+
+  // keep removeItem as you have but call renderItems afterwards (already present in your code)
+  function removeItem(i){
+    items.splice(i,1);
+    renderItems();
+  }
+
+  function openOrderSummaryModal(){ document.getElementById('orderSummaryModal').style.display='flex'; } 
+  function closeOrderSummaryModal(){ document.getElementById('orderSummaryModal').style.display='none'; }
 
   async function saveOrder(){
     const customer_id = document.getElementById('customer').value;
@@ -614,13 +708,7 @@ require '../shared/config.php';
         </div>
       </div>
     </div>
-  <script>
-  function openCustomerModal(){ document.getElementById('customerModal').style.display='flex'; }
-  function closeCustomerModal(){ document.getElementById('customerModal').style.display='none'; }
-  document.getElementById('customerForm').addEventListener('submit', async function(e){ e.preventDefault(); const name=document.getElementById('cust_name').value.trim(); if(!name) return alert('Name required'); const code=document.getElementById('cust_code').value.trim(); const notes=document.getElementById('cust_notes').value.trim(); const fd=new URLSearchParams({action:'save',name,code,notes}); const res=await fetch('Module8/api/customers.php',{method:'POST',body:fd}); const j=await res.json(); if(j.status==='success'){ alert('Customer created'); closeCustomerModal(); loadCustomers(); } else { alert('Create failed: '+(j.message||JSON.stringify(j))); } });
 
-  function openOrderSummaryModal(){ document.getElementById('orderSummaryModal').style.display='flex'; }
-  function closeOrderSummaryModal(){ document.getElementById('orderSummaryModal').style.display='none'; }
   </script>
 </body>
 </html>

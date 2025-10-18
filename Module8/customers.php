@@ -120,18 +120,27 @@ require '../shared/config.php';
     if (btnNew) btnNew.addEventListener('click', openCreateModal);
   }
 
-  function openCreateModal(){
+  async function openCreateModal(){
     console.log('openCreateModal called');
     ensureModalInit();
     document.getElementById('modalTitle').innerText = 'New Customer';
     document.getElementById('cust_id').value = '';
-    document.getElementById('cust_code').value = '';
     document.getElementById('cust_name').value = '';
     document.getElementById('cust_email').value = '';
     document.getElementById('cust_phone').value = '';
     document.getElementById('cust_address').value = '';
     document.getElementById('cust_credit_limit').value = '10000';
     document.getElementById('cust_outstanding_balance').value = '0';
+    // Fetch next code
+    try {
+      const res = await fetch('Module8/api/customers.php?action=next_code');
+      const j = await res.json();
+      if (j.status === 'success') {
+        document.getElementById('cust_code').value = j.code;
+      }
+    } catch (err) {
+      console.error('Failed to fetch next code:', err);
+    }
     // if showModal isn't ready yet, ensureModalInit will have scheduled initialization
     if (window.showModal) window.showModal();
   }
