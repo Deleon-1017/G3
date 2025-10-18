@@ -243,7 +243,7 @@ require '../shared/config.php';
         <tbody id="items_body"></tbody>
       </table>
       <div style="margin-top:12px">
-        <button class="btn btn-primary" onclick="saveOrder()">Save Order</button>
+        <button id="saveOrderBtn" class="btn btn-primary" onclick="saveOrder()">Save Order</button>
       </div>
     </div>
 
@@ -337,9 +337,19 @@ require '../shared/config.php';
     const body = document.getElementById('items_body');
     body.innerHTML = items.map((it,idx)=>`<tr><td>${it.description||''}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">₱${it.unit_price.toFixed(2)}</td><td style="text-align:right">₱${(it.line_total).toFixed(2)}</td><td></td><td></td><td></td><td></td><td style="text-align:center"><button onclick="removeItem(${idx})" class="btn" style="padding:4px 8px">Remove</button></td></tr>`).join('');
     calcTotals();
+    updateSaveButtonVisibility();
   }
 
   function removeItem(i){ items.splice(i,1); renderItems(); }
+
+  function updateSaveButtonVisibility(){
+    const btn = document.getElementById('saveOrderBtn');
+    if (items.length === 0 && !currentOrderId) {
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = 'inline-block';
+    }
+  }
 
   function calcTotals(){
     const subtotal = items.reduce((s,it)=>s + (it.line_total||0),0);
