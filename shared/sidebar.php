@@ -148,6 +148,35 @@ function is_active($names) {
       </div>
     </details>
 
+    <!-- Ticketing Dropdown -->
+    <details class="group" <?php if (is_active(['index.php','add_ticket.php','view_ticket.php','manage_solutions.php','customer_communications.php','solutions.php','update_ticket.php'])) echo "open"; ?>>
+      <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">
+        <span>Ticketing</span>
+        <i class="fas fa-chevron-down transform transition-transform group-open:rotate-180"></i>
+      </summary>
+      <div class="ml-5 mt-1 space-y-1">
+        <a href="<?php echo BASE_URL; ?>Module2/index.php" class="block px-2 py-1 rounded <?php echo is_active('index.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Dashboard</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module2/add_ticket.php" class="block px-2 py-1 rounded <?php echo is_active('add_ticket.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Add Ticket</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module2/view_ticket.php" class="block px-2 py-1 rounded <?php echo is_active('view_ticket.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>View Tickets</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module2/manage_solutions.php" class="block px-2 py-1 rounded <?php echo is_active('manage_solutions.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Manage Solutions</span>
+        </a>
+
+        <a href="<?php echo BASE_URL; ?>Module2/customer_communications.php" class="block px-2 py-1 rounded <?php echo is_active('customer_communications.php') ? 'bg-red-600 text-white' : 'hover:bg-gray-200'; ?>">
+          <span>Customer Communications</span>
+        </a>
+      </div>
+    </details>
+
     <!-- Human Resources Dropdown -->
     <details class="group" <?php if (is_active(['index.php','employees.php','payroll.php','attendance.php','leave.php','employee_documents.php','payslip_generator.php'])) echo "open"; ?>>
       <summary class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-200">

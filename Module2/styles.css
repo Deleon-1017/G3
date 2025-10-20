@@ -1,0 +1,247 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Adjust main container for sidebar */
+.main-container {
+    margin-left: 18rem; /* Matches sidebar width */
+    padding: 2rem;
+    min-height: 100vh;
+    transition: margin-left 0.3s; /* Smooth transition if sidebar toggles */
+}
+
+/* Card component */
+.card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #e79696;
+}
+
+.card h2 {
+    color: #e79696;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+/* Stats grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-card h3 {
+    font-size: 1rem;
+    color: #666;
+}
+
+.stat-card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e79696;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #555;
+}
+
+tr:hover {
+    background: #f8f9fa;
+}
+
+/* Forms */
+label {
+    display: block;
+    margin: 0.75rem 0 0.25rem;
+    font-weight: 500;
+    color: #444;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #e79696;
+    outline: none;
+}
+
+button {
+    background: #e79696;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #d66a6a;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.quick-action {
+    background: #e79696;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.quick-action i {
+    font-size: 1rem;
+}
+
+.quick-action:hover {
+    background: #d66a6a;
+    transform: translateY(-2px);
+}
+
+/* Messages */
+.message {
+    border-bottom: 1px solid #ddd;
+    padding: 0.75rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.agent-msg { background: #e0f7fa; border-radius: 4px; padding: 0.75rem; }
+.customer-msg { background: #fff3e0; border-radius: 4px; padding: 0.75rem; }
+
+/* Articles */
+.articles-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.article-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.article-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.category {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.rating-stats {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+/* Search form */
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.search-input {
+    flex: 1;
+}
+
+.search-btn {
+    padding: 0.5rem 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .main-container {
+        margin-left: 0; /* Collapse margin on mobile if sidebar is hidden */
+        padding: 1rem;
+    }
+    .stats-grid, .quick-actions {
+        grid-template-columns: 1fr;
+    }
+    table {
+        overflow-x: auto;
+        display: block;
+    }
+}
+
+/* Ensure content isn't hidden behind sidebar */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Optional: Add a media query for sidebar collapse (if toggled) */
+@media (max-width: 1024px) {
+    .main-container {
+        margin-left: 0;
+    }
+    aside {
+        transform: translateX(-18rem); /* Hide sidebar off-screen */
+        transition: transform 0.3s;
+    }
+    /* Add a toggle button or JS to show/hide if needed */
+}
