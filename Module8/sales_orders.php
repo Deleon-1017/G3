@@ -506,7 +506,7 @@ require '../shared/config.php';
             actions += ` <button onclick="deleteOrder(${o.id})" class="btn" title="Delete Order" style="background:none; color:red; border:none;"><i class="material-icons">delete</i></button>`;
             actions += ` <button onclick="confirmOrder(${o.id})" class="btn" title="Confirm Order" style="background:none; color:green; border:none;"><i class="material-icons">check</i></button>`;
           } else if (o.status === 'processed') {
-            actions += `<div class="dropdown"><button class="menu-icon" onclick="toggleDropdown(${o.id})">⋮</button><div id="dropdown-${o.id}" class="dropdown-content"><a onclick="markAsShipped(${o.id})">Mark as Shipped</a><a onclick="markAsDelivered(${o.id})">Mark as Delivered</a></div></div>`;
+            actions += `<div class="dropdown"><button class="menu-icon" onclick="toggleDropdown(${o.id})">⋮</button><div id="dropdown-${o.id}" class="dropdown-content"><a onclick="markAsShipped(${o.id})">Mark as Shipped</a></div></div>`;
           } else if (o.status === 'shipped') {
             actions += `<div class="dropdown"><button class="menu-icon" onclick="toggleDropdown(${o.id})">⋮</button><div id="dropdown-${o.id}" class="dropdown-content"><a onclick="markAsDelivered(${o.id})">Mark as Delivered</a></div></div>`;
           }
