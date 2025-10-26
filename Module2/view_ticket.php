@@ -1,13 +1,14 @@
 <?php
 require '../db.php';
 require '../shared/config.php';
-include '../shared/sidebar.php';
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) {
     header('Location: index.php');
     exit;
 }
+
+include '../shared/sidebar.php';
 
 // Get ticket details
 $stmt = $pdo->prepare("SELECT t.*, c.name as customer_name FROM support_tickets t LEFT JOIN customers c ON c.id = t.customer_id WHERE t.id = ?");
