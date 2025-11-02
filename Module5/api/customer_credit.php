@@ -19,15 +19,16 @@ try {
   $row = $stmt->fetch(PDO::FETCH_ASSOC);
   if (!$row) {
     echo json_encode(['status' => 'error', 'message' => 'No credit record found for customer']);
-  } elseif ($row['credit_limit'] == $row['outstanding_balance']) {
-    echo json_encode(['status' => 'success']);
+    exit;
   }
-  elseif ($row['credit_limit'] >= $row['outstanding_balance']) {
-    echo json_encode(['status' => 'success']);
+
+  // Check if outstanding balance is less than the order total (after discount and tax)
+  if ($row['outstanding_balance'] < $amount) {
+    echo json_encode(['status' => 'error', 'message' => 'Insufficient balance']);
+    exit;
   }
-  else {
-    echo json_encode(['status' => 'error', 'message' => 'Credit limit and outstanding balance are not equal']);
-  }
+
+  echo json_encode(['status' => 'success']);
 } catch (Exception $e) {
   echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
